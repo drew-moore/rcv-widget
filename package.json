@@ -2,6 +2,16 @@
   "name": "rcv-widget",
   "version": "0.0.0",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fairvote/rcv-widget.git"
+  },
+  "contributors": [
+    {
+      "name": "Drew Moore",
+      "email": "drew@socialsoftwarefoundation.org"
+    }
+  ],
   "angular-cli": {},
   "scripts": {
     "ng": "ng",
@@ -41,6 +51,6 @@
     "protractor": "~4.0.13",
     "ts-node": "1.2.1",
     "tslint": "^4.3.0",
-    "typescript": "~2.0.3"
+    "typescript": "^2.1.5"
   }
 }
