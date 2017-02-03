@@ -31,6 +31,8 @@
     "@angular/platform-browser-dynamic": "^2.3.1",
     "@angular/router": "^3.3.1",
     "core-js": "^2.4.1",
+    "lodash": "^4.17.4",
+    "moment": "^2.17.1",
     "rxjs": "^5.0.1",
     "ts-helpers": "^1.1.1",
     "zone.js": "^0.7.2"
@@ -38,9 +40,12 @@
   "devDependencies": {
     "@angular/cli": "1.0.0-beta.30",
     "@angular/compiler-cli": "^2.3.1",
+    "@types/faker": "^3.1.32",
     "@types/jasmine": "2.5.38",
+    "@types/lodash": "^4.14.52",
     "@types/node": "^6.0.42",
     "codelyzer": "~2.0.0-beta.1",
+    "faker": "^3.1.0",
     "jasmine-core": "2.5.2",
     "jasmine-spec-reporter": "2.5.0",
     "karma": "1.2.0",
