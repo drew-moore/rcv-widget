@@ -1,11 +1,11 @@
 import {NgModule} from "@angular/core";
-import {CommonModule} from "@angular/common";
 import {BallotContainerComponent} from "./ballot-container.component";
 import {BallotViewComponent} from "./view/ballot-view.component";
+import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   imports: [
-    CommonModule
+    SharedModule
   ],
   declarations: [ BallotContainerComponent, BallotViewComponent ]
 })

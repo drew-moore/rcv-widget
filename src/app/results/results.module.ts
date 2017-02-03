@@ -1,11 +1,11 @@
 import {NgModule} from "@angular/core";
-import {CommonModule} from "@angular/common";
 import {ResultsContainerComponent} from "./results-container.component";
 import {ResultsViewComponent} from "./view/results-view.component";
+import {SharedModule} from "../shared/shared.module";
 
 @NgModule({
   imports: [
-    CommonModule
+    SharedModule
   ],
   declarations: [ ResultsContainerComponent, ResultsViewComponent ]
 })

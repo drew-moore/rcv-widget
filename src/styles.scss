@@ -1,1 +1,36 @@
-/* You can add global styles to this file, and also import other style files */
+/* typefaces */
+@import url('https://fonts.googleapis.com/css?family=Work+Sans:300,400,500,600,700,800|Quicksand:300,400,700|Source+Code+Pro:300,400');
+/* icons */
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+@import url('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css');
+/* app style assets */
+@import 'assets/style/all';
+
+html, body {
+  margin: 0;
+  position: relative;
+  height: 100%;
+  background-color: $app-background;
+  color: $app-foreground;
+  overflow-x: hidden;
+  @extend .work-sans;
+  font-weight: 400;
+
+  @include mq-xs {
+    font-size: $font-size-sm;
+  }
+
+  @include mq-sm-md {
+    font-size: $font-size-md;
+  }
+
+  @include mq-gt-md {
+    font-size: $font-size-lg;
+  }
+}
+
+.app-root {
+  display: block;
+  height: 100%;
+  position: relative;
+}
