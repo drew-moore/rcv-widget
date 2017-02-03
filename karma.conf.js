@@ -28,7 +28,8 @@ module.exports = function (config) {
     },
     angularCli: {
       config: './angular-cli.json',
-      environment: 'dev'
+      sourcemap: true,
+      environment: 'test'
     },
     reporters: config.angularCli && config.angularCli.codeCoverage
               ? ['progress', 'karma-remap-istanbul']

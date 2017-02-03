@@ -1,0 +1,3 @@
+root:
+  read: true
+  write: true
