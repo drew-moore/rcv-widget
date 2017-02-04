@@ -1,8 +1,8 @@
 import * as moment from "moment";
 import * as Faker from "faker";
 import {random, shuffle} from "lodash";
-import {Vote} from "./vote";
-import {PollOption, Poll} from "./poll";
+import {Vote} from "./vote/vote.models";
+import {PollOption, Poll} from "./poll/poll.models";
 
 
 let lastId = 0;
