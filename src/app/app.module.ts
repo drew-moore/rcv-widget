@@ -2,9 +2,19 @@ import {BrowserModule} from "@angular/platform-browser";
 import {NgModule} from "@angular/core";
 import {AppComponent} from "./app.component";
 import {CoreModule} from "./core/core.module";
-import {AppRoutingModule} from "./app.routing.module";
-import {BallotModule} from "./ballot/ballot.module";
-import {ResultsModule} from "./results/results.module";
+import {RouterModule} from "@angular/router";
+
+export const APP_ROUTES = [
+  {
+    path: 'embed',
+    loadChildren: 'app/widget/widget.module#WidgetModule'
+  }
+  , {
+    path: '',
+    loadChildren: 'app/website/website.module#WebsiteModule'
+  }
+];
+
 
 @NgModule({
   declarations: [
@@ -12,14 +22,11 @@ import {ResultsModule} from "./results/results.module";
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule,
 
-    CoreModule,
+    RouterModule.forRoot(APP_ROUTES),
+    CoreModule
 
-    BallotModule,
-    ResultsModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
