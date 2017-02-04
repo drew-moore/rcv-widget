@@ -3,6 +3,7 @@ import {NgModule} from "@angular/core";
 import {AppComponent} from "./app.component";
 import {CoreModule} from "./core/core.module";
 import {RouterModule} from "@angular/router";
+import {AppInfrastructureModule} from "./app.infrastructure.module";
 
 export const APP_ROUTES = [
   {
@@ -24,6 +25,9 @@ export const APP_ROUTES = [
     BrowserModule,
 
     RouterModule.forRoot(APP_ROUTES),
+
+    AppInfrastructureModule,
+
     CoreModule
 
   ],

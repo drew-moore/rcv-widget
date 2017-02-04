@@ -1,10 +1,7 @@
 import {NgModule, SkipSelf, Optional} from "@angular/core";
-import {InfrastructureModule} from "../infrastructure/infrastructure.module";
 
 @NgModule({
-  imports: [
-    InfrastructureModule
-  ],
+
   declarations: []
 })
 export class CoreModule {
