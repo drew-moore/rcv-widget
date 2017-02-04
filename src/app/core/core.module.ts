@@ -1,8 +1,9 @@
 import {NgModule, SkipSelf, Optional} from "@angular/core";
+import {PollService} from "./poll/poll.service";
 
 @NgModule({
-
-  declarations: []
+  imports: [],
+  providers: [ PollService ]
 })
 export class CoreModule {
 

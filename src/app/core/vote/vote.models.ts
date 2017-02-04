@@ -30,6 +30,7 @@ export interface Vote {
 
 export type RequiredVoteField = 'choices'|'published';
 export type OptionalVoteField = 'id'|'owner'|'cast';
+export type VoteField = RequiredVoteField|OptionalVoteField;
 
 export type PartialVote = {
   [P in RequiredVoteField]: Vote[P] //mandatory

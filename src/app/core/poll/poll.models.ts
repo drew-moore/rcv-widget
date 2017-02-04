@@ -87,24 +87,26 @@ export interface Poll {
 
 export type RequiredPollField = 'prompt'|'security'|'published'|'expires'|'status';
 export type OptionalPollField = 'id'|'created'|'owner'|'expiration';
+export type PollField = RequiredPollField|OptionalPollField;
 
 export type RequiredPollOptionField = 'text'|'color';
 export type OptionalPollOptionField = 'id'|'image';
+export type PollOptionField = RequiredPollOptionField|OptionalPollOptionField;
 
 
 export type PartialPollOption =
   {[P in OptionalPollOptionField]?: PollOption[P]} &
     {[P in RequiredPollOptionField]: PollOption[P]
-      }
+      };
 
 
 export type PartialPoll =
   { [P in OptionalPollField]?: Poll[P]} &  //optional props
     { [P in  RequiredPollField]: Poll[P]} &  //mandatory
-    { options: PartialPollOption[] } // instead of
+    { options: PartialPollOption[] }; // instead of
 
 export type PollEntity = {
   [P in RequiredPollField|'id'|'owner']: Poll[P]
   } & {
   [P in 'created'|'expiration']: Moment|string
-  }
+  };
