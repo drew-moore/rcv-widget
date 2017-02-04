@@ -13,8 +13,16 @@ export const APP_ROUTES = [
       }, {
         path: 'results',
         component: ResultsContainerComponent
+      },
+      {
+        path: '',
+        redirectTo: 'ballot',
+        pathMatch: 'full'
       }
     ]
+  }, {
+    path: '',
+    loadChildren: 'app/website/website.module#WebsiteModule'
   }
 ];
 
