@@ -1,0 +1,262 @@
+@import "../../../assets/style/all";
+
+:host {
+  @include flex(column);
+  height: 100%;
+
+  .top-bar, .bottom-bar {
+    flex: 0 0 auto;
+
+    @include mq-gt-sm {
+      flex: 0 0 auto;
+    }
+
+    @include mq-sm-md {
+      flex: 0 0 auto;
+    }
+
+  }
+
+  .top-bar {
+    @include control-bar(top);
+    flex-wrap: wrap;
+
+    .options-menu-div {
+      background-color: md-color($md-grey, 900);
+
+      md-icon {
+        color: md-contrast($md-grey, 900)
+      }
+
+    }
+
+    .narration {
+      margin: 5px 10px;
+
+      .big {
+        font-size: 1.2em;
+        font-weight: 500;
+      }
+
+    }
+
+    .left {
+      @include flex;
+    }
+
+    .round-details {
+      margin: 5px 10px;
+      @include flex(column, $justify: space-around);
+      text-transform: uppercase;
+
+      .round-no {
+        font-size: 1.3em;
+        font-weight: 700;
+        margin-right: 10px;
+      }
+
+      .vote-totals {
+        @include flex(row);
+        flex-wrap: wrap;
+        font-size: 1.1em;
+
+        .active, .inactive {
+          cursor: pointer;
+        }
+
+        .active {
+          font-weight: 500;
+          margin-right: 10px;
+        }
+
+        .inactive {
+          font-weight: 300;
+        }
+
+      }
+
+    }
+
+    .narration {
+      @include flex(column, $justify: space-around);
+      text-align: right;
+      font-size: 0.9em;
+
+      .top {
+        margin-bottom: 5px;
+      }
+
+    }
+
+  }
+
+  .bottom-bar {
+    @include control-bar(bottom);
+
+    .center {
+      @include flex($align: center);
+
+      button {
+        margin: 0 10px;
+      }
+
+      .green:not([disabled]) {
+        background-color: md-color($md-green, 700);
+      }
+      .purple:not([disabled]) {
+        background-color: $fairvote-purple;
+      }
+
+      .next-round-btn {
+        transition: 200ms linear background-color;
+      }
+
+      md-icon {
+        color: white;
+      }
+
+
+    }
+
+  }
+
+  .bars-container {
+    position: relative;
+    overflow-x: hidden;
+
+    @include mq-gt-sm {
+      flex: 1 1 calc(100% - 180px);
+    }
+
+    @include mq-sm-md {
+      flex: 1 1 calc(100% - 130px);
+    }
+
+  }
+
+  .bars {
+    overflow-x: hidden;
+    padding-top: 20px;
+    @include flex(column, space-around);
+
+    .bar-wrapper {
+      margin: 10px 0;
+    }
+
+  }
+
+  .bottom-bar {
+    .left, .center, .right {
+      margin: 10px 15px;
+    }
+  }
+
+  .axes {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    height: 100%;
+    transform-origin: 0;
+
+    .axis {
+      position: absolute;
+      border-left: 2px dashed rgba(0, 0, 0, 0.25);
+      margin-right: -1px;
+      transition: 250ms ease-out left;
+      z-index: 0;
+
+      &.axis-10 {
+        .text {
+          margin-left: -0.6em;
+        }
+      }
+
+      &.bold.green {
+        opacity: 1;
+        color: md-color($md-green, 700);
+        border-left: 2px dashed md-color($md-green, 700);
+      }
+
+      .text {
+        background-color: rgba(255, 255, 255, 0.5);
+        margin-left: -0.65em;
+      }
+
+      top: 0;
+      bottom: 0;
+      /*    &.axis-10 {
+            left: 10%;
+          }
+
+          &.axis-20 {
+            left: 20%;
+          }
+
+          &.axis-30 {
+            left: 30%;
+          }
+
+          &.axis-40 {
+            left: 40%;
+          }
+
+
+
+          &.axis-50 {
+            left: 50%;
+          }
+
+          &.axis-60 {
+            left: 60%;
+          }
+          &.axis-70 {
+            left: 70%;
+          }
+          &.axis-80 {
+            left: 80%;
+          }
+          &.axis-90 {
+            left: 90%;
+          }
+          &.axis-100 {
+            left: 100%;
+          }*/
+
+    }
+
+  }
+
+}
+
+.options-menu {
+  background-color: md-color($md-grey, 300);
+  @include responsive-padding($lt-md: 5px, $gt-sm: 10px 15px);
+  margin-right: 5px;
+  .section {
+    margin: 20px 0;
+  }
+
+  .exclude {
+    @include flex(column);
+
+    .heading {
+      align-self: flex-start;
+      font-size: 0.85em;
+      border-bottom: 1px solid $dark-grey-border;
+    }
+
+    .row {
+      @include flex($align: center);
+      align-self: center;
+
+      & > * {
+        margin: 5px 10px;
+      }
+
+    }
+
+  }
+}
+

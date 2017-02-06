@@ -1,0 +1,64 @@
+<div class="bar"
+     [style.width.%]="barWidth"
+     *ngIf="showBar"
+     [@bar]="initialized ? 'initialized' : 'uninitialized'"
+     (@bar.done)="setInitialized()"></div>
+
+<div class="segment-wrapper" *ngIf="initialized && isHovered && showBar && currRound > 0" [@segments]>
+  <!--  <div *ngFor="let delta of visibleSegments"
+         class="rect"
+         [class.active]="isSegmentHovered(delta.source.id)"
+         [style.background-color]="delta?.source.color"
+         [style.width.%]="rectWidth(delta?.count)"
+         [@rect]
+         hoverable
+         (hovered)="emitSegmentHover(delta.source.id, $event)">
+    </div>-->
+  <rcv-segment *ngFor="let seg of segments; trackBy: segmentId"
+               [style.width.%]="rectWidth(seg.count)"
+               [option]="seg.option"
+               [count]="seg.count"
+               [round]="seg.round"
+               [showColor]="isHovered && seg.option.id !== option.id"
+               [showCount]="isHovered && !hoverState.segment || hoverState.segment == seg.option.id"
+               [showDetail]="isSegmentHovered(seg.option.id)"
+               [firstChoice]="seg.option.id == option.id"
+               [@rect]
+               hoverable (hovered)="emitSegmentHover(seg.option.id, $event)"
+  ></rcv-segment>
+  <span class="vote-total">
+    <span class="value"> = {{state.votes.count}} </span>
+   <span class="label">votes</span>
+    <span class="pct"><span class="value">{{currPct}}%</span><span class="label"> of {{state.votes.outOf}}</span> </span>
+  </span>
+</div>
+<div class="info"
+     [class.dark]="!showBar"
+     [style.max-width.%]="showBar ? barWidth : 100"
+     [@info]>
+  <div class="color-swatch" [style.background-color]="option.color"></div>
+  <div class="text">{{option.text}}</div>
+  <div [ngSwitch]="detailState" class="detail" [@details]="initialized ? 'initialized' : 'uninitialized'">
+    <div *ngSwitchCase="'stats'" class="detail-row stats" [class.invisible]="isHovered && currRound > 0">
+      <div class="curr-pct">{{currPct}}%</div>
+      <div class="vote-count"><span class="value">{{state.votes.count}}</span><span class="key">votes</span></div>
+      <div class="delta"
+           *ngFor="let delta of visibleDeltas"
+           [@delta]="isHovered ? 'out' : 'up'"
+           [style.color]="delta.source.color">
+        <div class="count">+{{delta.count}}</div>
+      </div>
+    </div>
+    <div *ngSwitchCase="'last-eliminated'" class="last-eliminated">
+      <span class="eliminated">eliminated!</span>
+      <span [style.color]="option.color" class="count">-{{totalVotesOut}}</span>
+    </div>
+    <div *ngSwitchCase="'eliminated'" class="detail-row eliminated">
+      Eliminated in round {{roundEliminated + 1}}
+    </div>
+    <div *ngSwitchCase="'removed'" class="eliminated">
+      <span class="note">removed by user </span> <a (click)="unremove.emit()" class="linklike">undo</a>
+    </div>
+  </div>
+
+</div>

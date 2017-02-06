@@ -1,3 +1,133 @@
-<p>
-  results-view works!
-</p>
+<div class="top-bar">
+  <div class="left">
+
+    <div class="round-details">
+      <div class="round-no">
+        Round {{state.currRound + 1}}
+      </div>
+      <div class="vote-totals">
+        <div class="active" [mdTooltip]="totalVotesTooltip" mdTooltipPosition="below">
+          {{state.rounds[state.currRound].votes.active}} votes
+        </div>
+        <div class="inactive"
+             *ngIf="state.rounds[state.currRound].votes.inactive > 0"
+             [mdTooltip]="inactiveVotesTooltip"
+             mdTooltipPosition="right">({{state.rounds[state.currRound].votes.inactive}} inactive)
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="narration" *ngIf="narrationState == 'undetermined'">
+    <div class="top" [innerHtml]="leaderText()"></div>
+    <div class="bottom" fxHide="false" fxHide.xs="true" [innerHtml]="loserText()">
+    </div>
+  </div>
+  <div class="narration" *ngIf="narrationState == 'outright'">
+    <div class="top big">
+      {{winnerStatement()}}
+    </div>
+    <div class="bottom" fxHide="false" fxHide.xs="true">
+      {{runnerUpStatement()}}
+    </div>
+  </div>
+  <div class="narration" *ngIf="narrationState == 'tie'">
+    <div [innerHtml]="tieStatement()"></div>
+  </div>
+</div>
+<md-sidenav-container class="bars-container">
+  <div class="bars">
+
+    <div class="axes">
+      <div class="axis axis-10" [style.left.%]="axisPos(10)">
+        <div class="text">10<small>%</small></div>
+      </div>
+      <div class="axis axis-20" [style.left.%]="axisPos(20)">
+        <div class="text">20<small>%</small></div>
+      </div>
+      <div class="axis axis-30" [style.left.%]="axisPos(30)">
+        <div class="text">30<small>%</small></div>
+      </div>
+      <div class="axis axis-40" [style.left.%]="axisPos(40)">
+        <div class="text">40<small>%</small></div>
+      </div>
+      <div class="axis axis-50 bold green" [style.left.%]="axisPos(50)">
+        <div class="text">50<small>%</small></div>
+      </div>
+      <div class="axis axis-60" [style.left.%]="axisPos(60)">
+        <div class="text">60<small>%</small></div>
+      </div>
+      <div class="axis axis-70" [style.left.%]="axisPos(70)">
+        <div class="text">70<small>%</small></div>
+      </div>
+      <div class="axis axis-80" [style.left.%]="axisPos(80)">
+        <div class="text">80<small>%</small></div>
+      </div>
+      <div class="axis axis-90" [style.left.%]="axisPos(90)">
+        <div class="text">90<small>%</small></div>
+      </div>
+      <div class="axis axis-100" [style.left.%]="axisPos(100)">
+        <div class="text"></div>
+      </div>
+    </div>
+
+    <rcv-bar *ngFor="let entry of options; trackBy:barId"
+             [currRound]="state.currRound"
+             [option]="entry.option"
+             [rounds]="entry.rounds"
+             [scale]="barScale()"
+             [hoverState]="state.hovered"
+             (barHovered)="barHovered(entry.option.id, $event)"
+             (segmentHovered)="segmentHovered(entry.option.id, $event)"
+             (unremove)="unremoveOption(entry.option.id)"
+             class="bar-wrapper"
+    ></rcv-bar>
+
+
+  </div>
+  <md-sidenav #menu mode="side" class="options-menu">
+    <div class="section exclude">
+      <div *ngIf="removedOptions.length > 0" class="currently-excluded">
+        <div class="heading">Excluded options</div>
+        <div *ngFor="let opt of removedOptions" class="row">
+          <div class="text">{{opt.text}}</div>
+          <div class="unremove linklike" (click)="unremoveOption(opt.id)">UNDO</div>
+        </div>
+      </div>
+      <md-select [placeholder]="removedOptions.length == 0 ? 'Exclude an option' : 'Exclude another'"
+                 [(ngModel)]="lastRemovedOption"
+                 (ngModelChange)="removeOption($event)"
+                 class="remove-option-select">
+        <md-option *ngFor="let opt of unremovedOptions" [value]="opt?.id">{{opt?.text}}</md-option>
+      </md-select>
+    </div>
+  </md-sidenav>
+</md-sidenav-container>
+<div class="bottom-bar">
+  <div class="left">
+    <button md-icon-button (click)="menu.opened ? menu.close() : menu.open()">
+      <md-icon>menu</md-icon>
+    </button>
+  </div>
+  <div class="center">
+    <button md-mini-fab class="purple" (click)="prevRound.emit()" [disabled]="state.currRound == 0">
+      <md-icon style="transform:rotate(180deg)">play_arrow</md-icon>
+    </button>
+    <button md-fab
+            class="next-round-btn"
+            (click)="state.currRound < state.rounds.length - 1 ? nextRound.emit() : reset.emit()"
+            [class.purple]="state.currRound < state.rounds.length - 1"
+            [class.green]="state.currRound == state.rounds.length - 1">
+      <md-icon *ngIf="state.currRound < state.rounds.length - 1">play_arrow</md-icon>
+      <md-icon *ngIf="state.currRound == state.rounds.length - 1">replay</md-icon>
+    </button>
+
+  </div>
+  <div class="right">
+    <div class="left">
+      <button md-icon-button>
+        <md-icon>share</md-icon>
+      </button>
+    </div>
+  </div>
+</div>

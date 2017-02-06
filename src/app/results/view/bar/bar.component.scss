@@ -1,0 +1,169 @@
+@import "./../../../../assets/style/all";
+
+:host {
+  @include flex;
+  position: relative;
+  flex: 1 1 65px;
+  margin: 10px 5px;
+
+  .rect {
+    transform-origin: 0;
+    transition: 250ms ease-out width;
+    @include flex($align: center);
+
+    &.active {
+      z-index: 3;
+    }
+
+    .delta-detail {
+      overflow-x: visible;
+      max-width: 100%;
+      padding: 2px;
+      z-index: 2;
+      text-align: center;
+      white-space: nowrap;
+      font-weight: 500;
+      font-size: 0.85em;
+      color: md-color($md-grey, 800);
+      pointer-events: none;
+    }
+
+  }
+
+}
+
+.bar, .segment-wrapper {
+  position: absolute;
+  transform-origin: 0;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 0;
+  width: 100%;
+}
+
+.bar {
+  transition: 250ms 250ms ease-out width;
+  background-color: md-color($md-grey, 800);
+}
+
+.segment-wrapper {
+  @include flex($justify: flex-start);
+
+  .vote-total {
+    margin-left: 4px;
+    transition: 250ms 100ms linear opacity;
+
+    &.invisible {
+      opacity: 0;
+    }
+
+    .value {
+      font-weight: 600;
+    }
+    .label {
+      text-transform: uppercase;
+    }
+
+    .pct {
+      padding-left: 5px;
+      margin-left: 5px;
+      border-left: 1px solid rgba(0, 0, 0, 0.87);
+    }
+
+  }
+
+}
+
+.info {
+  align-self: center;
+  @include flex($align: center);
+  z-index: 1;
+  color: md-contrast($md-grey, 800);
+
+  @include mq-lt-md {
+    & > * {
+      margin: 0 10px;
+    }
+
+  }
+
+  @include mq-gt-sm {
+    & > * {
+      margin: 0 5px;
+    }
+
+  }
+
+  &.dark {
+    color: md-color($md-grey, 800);
+  }
+
+  .color-swatch {
+    border-radius: 50%;
+    height: 1em;
+    width: 1em;
+    flex: 0 0 1em;
+    margin-right: 5px;
+    transition: 250ms linear height, width;
+  }
+
+  .vote-count {
+    & > span {
+      margin: 0 2px;
+    }
+
+    .key {
+      text-transform: uppercase;
+      font-weight: 300;
+    }
+
+  }
+
+  .detail-row {
+    @include flex($align: center);
+    align-self: stretch;
+    & > * {
+      margin: 0 5px;
+    }
+    flex-wrap: wrap;
+  }
+
+}
+
+.stats {
+  transition: 150ms linear opacity;
+  &.invisible {
+    opacity: 0;
+  }
+}
+
+.eliminated {
+  font-weight: 300;
+  text-transform: uppercase;
+}
+
+.delta {
+  @include flex($align: center);
+  align-self: stretch;
+  pointer-events: none;
+  .count {
+    font-weight: 600;
+  }
+
+  .detail {
+    margin-left: 4px;
+    white-space: nowrap;
+  }
+}
+
+.last-eliminated {
+  .count {
+    font-weight: 600;
+  }
+
+}
+
+.unremove-btn {
+  margin-left: 10px;
+}

@@ -3,6 +3,8 @@ import {CommonModule} from "@angular/common";
 import {MaterialModule, MdIconRegistry} from "@angular/material";
 import {FlexLayoutModule} from "@angular/flex-layout";
 import "hammerjs";
+import {HoverableDirective} from "./directives/hoverable.directive";
+import {SuffixedPipe} from "./pipes/suffixed.pipe";
 
 @NgModule({
   imports: [
@@ -10,13 +12,13 @@ import "hammerjs";
     MaterialModule.forRoot(),
     FlexLayoutModule.forRoot()
   ],
-  exports: [ CommonModule, MaterialModule, FlexLayoutModule ]
+  declarations: [ HoverableDirective, SuffixedPipe ],
+  exports: [ CommonModule, MaterialModule, FlexLayoutModule, HoverableDirective, SuffixedPipe ]
 })
 export class SharedModule {
 
   constructor(iconRegistry: MdIconRegistry) {
     iconRegistry.registerFontClassAlias('fontawesome', 'fa');
   }
-
 
 }
