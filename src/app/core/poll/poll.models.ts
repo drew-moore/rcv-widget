@@ -1,4 +1,5 @@
 import * as moment from "moment";
+import {Entity} from "../_internal";
 import Moment = moment.Moment;
 
 /**
@@ -105,8 +106,12 @@ export type PartialPoll =
     { [P in  RequiredPollField]: Poll[P]} &  //mandatory
     { options: PartialPollOption[] }; // instead of
 
-export type PollEntity = {
+export type PersistablePoll = {
   [P in RequiredPollField|'id'|'owner']: Poll[P]
   } & {
   [P in 'created'|'expiration']: Moment|string
-  };
+  } & {
+  options: { [id: string]: PollOption }
+}
+
+export type PollEntity = PersistablePoll & Entity;

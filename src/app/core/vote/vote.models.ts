@@ -1,4 +1,5 @@
 import {Moment} from "moment";
+import {Entity} from "../_internal";
 
 export interface Vote {
   /**
@@ -38,8 +39,9 @@ export type PartialVote = {
   [P in OptionalVoteField]?: Vote[P] //optiona;
   }
 
-export type VoteEntity = {
+export type VoteEntity = Entity & {
   [P in RequiredVoteField|'id'|'owner']: Vote[P]
   } & {
   cast: Moment|string
-}
+};
+

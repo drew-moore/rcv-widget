@@ -1,10 +1,11 @@
-import {Vote, RequiredVoteField, OptionalVoteField, VoteField} from "./vote.models";
+import {Vote, RequiredVoteField, OptionalVoteField, VoteField, VoteEntity} from "./vote.models";
 import * as moment from "moment";
 
 /************************ Vote **************************/
-const REQUIRED_VOTE_FIELDS: RequiredVoteField[] = [ 'choices', 'published' ];
+const REQUIRED_VOTE_FIELDS: RequiredVoteField[] = [ 'choices' ];
 const OPTIONAL_VOTE_FIELDS: OptionalVoteField[] = [ 'id', 'owner', 'cast' ];
 const VOTE_FIELDS: VoteField[] = [ ...REQUIRED_VOTE_FIELDS, ...OPTIONAL_VOTE_FIELDS ];
+
 
 
 export type VoteFactoryOptions = {
@@ -33,6 +34,14 @@ export function vote(input: any, options: VoteFactoryOptions = {}): Vote {
     owner: input.owner
   }
 }
+
+export function voteForEntity(it: VoteEntity): Vote|undefined {
+  if (!it.$exists()) {
+    return undefined;
+  }
+  return vote(Object.assign({}, it, { id: it.$key }));
+}
+
 
 export function votesEqual(x: Vote, y: Vote) {
   if ((!x && !!y) || (!!x && !y)) {

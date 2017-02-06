@@ -13,7 +13,7 @@ const initialState: VotesState = {
 };
 
 
-export function votes(state: VotesState, action: Action): VotesState {
+export function votes(state: VotesState = initialState, action: Action): VotesState {
 
   switch (action.type) {
 

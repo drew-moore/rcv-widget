@@ -1,15 +1,15 @@
 /* tslint:disable:no-unused-variable */
 import {TestBed, inject} from "@angular/core/testing";
-import {PollService} from "./poll.service";
+import {VoteService} from "./vote.service";
 
-describe('PollEffects', () => {
+describe('VoteService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [ PollService ]
+      providers: [ VoteService ]
     });
   });
 
-  it('should ...', inject([ PollService ], (service: PollService) => {
+  it('should ...', inject([ VoteService ], (service: VoteService) => {
     expect(service).toBeTruthy();
   }));
 });

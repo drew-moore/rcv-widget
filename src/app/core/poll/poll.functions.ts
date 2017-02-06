@@ -1,5 +1,5 @@
 import * as moment from "moment";
-import {sortBy} from "lodash";
+import {sortBy, keys} from "lodash";
 import {
   PollOption,
   Poll,
@@ -8,7 +8,8 @@ import {
   OptionalPollField,
   RequiredPollOptionField,
   OptionalPollOptionField,
-  PollOptionField
+  PollOptionField,
+  PollEntity
 } from "./poll.models";
 
 
@@ -29,11 +30,13 @@ export type PollFactoryOptions = { optionsFactory?: PollOptionFactoryOptions, th
 export function pollOption(input: any, options: PollOptionFactoryOptions = {}): PollOption {
 
   REQUIRED_POLL_OPTION_FIELDS.forEach(prop => {
-    if (options && options.throwOnInvalid) {
-      throw `Mandatory property ${prop} missing on PollOption input value: ${JSON.stringify(input)}`;
-    }
-    else {
-      throw `Mandatory property ${prop} missing on PollOption input value: ${JSON.stringify(input)}`;
+    if (input[ prop ] == undefined) {
+      if (options && options.throwOnInvalid) {
+        throw `Mandatory property ${prop} missing on PollOption input value: ${JSON.stringify(input)}`;
+      }
+      else {
+        throw `Mandatory property ${prop} missing on PollOption input value: ${JSON.stringify(input)}`;
+      }
     }
   });
 
@@ -64,7 +67,6 @@ export function poll(input: any, options: PollFactoryOptions = {}): Poll {
     throw `Poll is marked as ephemeral but has no expiration: ${JSON.stringify(input)}`;
   }
 
-
   return {
     id: input.id as string,
     prompt: input.prompt,
@@ -81,6 +83,18 @@ export function poll(input: any, options: PollFactoryOptions = {}): Poll {
     status: input.status || 'open'
   }
 }
+
+export function pollForEntity(it: PollEntity): Poll|undefined {
+  if (!it.$exists()) {
+    return undefined;
+  }
+
+  let opts = keys(it.options).map(id => Object.assign({}, it.options[ id ], { id }));
+
+  return poll(Object.assign({}, it, { id: it.$key, options: opts }));
+}
+
+
 
 
 export function pollsEqual(x: Poll, y: Poll) {

@@ -1,6 +1,6 @@
 import * as moment from "moment";
 import * as Faker from "faker";
-import {random, shuffle} from "lodash";
+import {random, shuffle, range} from "lodash";
 import {Vote} from "./vote/vote.models";
 import {PollOption, Poll} from "./poll/poll.models";
 
@@ -61,6 +61,12 @@ export function mockVote(availableChoices: string[]): Vote {
     published: false,
     cast: moment()
   }
+}
+
+export function mockVotesForPoll(poll: Poll): Vote[] {
+  let numVotes = random(100, 300);
+  let ids = poll.options.map(opt => opt.id);
+  return range(0, numVotes).map(() => mockVote(ids));
 }
 
 export function mockPollOption(): PollOption {
