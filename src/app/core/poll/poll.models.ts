@@ -100,18 +100,27 @@ export type PartialPollOption =
     {[P in RequiredPollOptionField]: PollOption[P]
       };
 
+//Serializable___ means: stripped of any undefined fields (always), and typically stripped of id properties that are not directly persisted as such
+
+export type SerializablePollOption = {
+  [P in 'text'|'color']: PollOption[P]
+  } &  {
+  image?: string;
+} // note NO mention of id.
+
 
 export type PartialPoll =
   { [P in OptionalPollField]?: Poll[P]} &  //optional props
     { [P in  RequiredPollField]: Poll[P]} &  //mandatory
     { options: PartialPollOption[] }; // instead of
 
-export type PersistablePoll = {
-  [P in RequiredPollField|'id'|'owner']: Poll[P]
+export type SerializablePoll = {
+  [P in RequiredPollField|'owner']: Poll[P]
   } & {
-  [P in 'created'|'expiration']: Moment|string
-  } & {
-  options: { [id: string]: PollOption }
+  created: string,
+  expiration?: string
+} & {
+  options: { [id: string]: SerializablePollOption }
 }
 
-export type PollEntity = PersistablePoll & Entity;
+export type PollEntity = SerializablePoll & Entity;

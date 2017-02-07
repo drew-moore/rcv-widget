@@ -1,4 +1,5 @@
 import {Action} from "@ngrx/store";
+import {createSelector} from "reselect";
 import {User} from "../core/user/user.model";
 
 export type SocialAuthProvider = 'facebook'|'twitter'|'google';
@@ -83,9 +84,10 @@ export function auth(state = initialState, action: Action): AuthState {
       return Object.assign({}, state, { pending: true });
 
     case AuthActions.LOGIN_SUCCESS:
+    case AuthActions.PASSWORD_SIGNUP_SUCCESS:
       return {
         pending: false,
-        user: (action as LoginSuccessAction).payload
+        user: (action as LoginSuccessAction|SignupSuccessAction).payload
       };
 
     case AuthActions.LOGOUT_SUCCESS:
@@ -106,3 +108,10 @@ export function auth(state = initialState, action: Action): AuthState {
 
 
 export const getAuthUser = (state: AuthState) => state.user;
+
+export const getAuthUserId = createSelector(getAuthUser, (user) => {
+  if (!user) {
+    return null;
+  }
+  return user.id;
+});

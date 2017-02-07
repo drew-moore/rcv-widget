@@ -5,9 +5,9 @@ export interface VotesState {
   voteIds: string[];
   votes: { [id: string]: Vote };
 
-  //index of each poll id to arrays of the ids of votes cast in
+  //index of each forAny id to arrays of the ids of votes cast in
   pollIds: string[]
-  pollVotes: { [pollId: string]: string[] }; //SORTED array of vote ids that belong to each poll
+  pollVotes: { [pollId: string]: string[] }; //SORTED array of vote ids that belong to each forAny
 
 }
 

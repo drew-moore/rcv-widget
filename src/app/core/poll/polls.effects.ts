@@ -5,7 +5,7 @@ import {PollLoadedAction, PollsActions, PollCreatedAction} from "./polls.state";
 import {WidgetActions} from "../../widget/widget.state";
 import {Poll, PollEntity, PartialPoll} from "./poll.models";
 import {AngularFireDatabase} from "angularfire2";
-import {pollForEntity} from "./poll.functions";
+import {forEntity} from "./poll.functions";
 import {PollService} from "./poll.service";
 
 @Injectable()
@@ -25,6 +25,9 @@ export class PollEffects {
   @Effect()
   createPollEffects: Observable<PollCreatedAction> =
     this.actions.ofType(PollsActions.CREATE_POLL)
+      .map(toPayload)
+      .flatMap((it: PartialPoll) => this.pollService.createPoll(it))
+      .map(poll => new PollCreatedAction(poll));
 
 
   constructor(private actions: Actions, private pollService: PollService, private db: AngularFireDatabase) {}
@@ -32,11 +35,7 @@ export class PollEffects {
 
   observePoll(id: string): Observable<Poll> {
 
-    return this.db.object(`/polls/${id}`).map(it => it as PollEntity).map(ent => pollForEntity(ent)).filter(it => !!it);
-
-  }
-
-  createPoll(input: PartialPoll) {
+    return this.db.object(`/polls/${id}`).map(it => it as PollEntity).map(ent => forEntity(ent)).filter(it => !!it);
 
   }
 

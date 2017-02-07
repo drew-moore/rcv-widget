@@ -1,3 +1,4 @@
+import {Entity} from "../_internal";
 export interface User {
 
   /**
@@ -20,21 +21,24 @@ export interface User {
    */
   isVerified: boolean;
 
-}
-
-export interface UserEntity extends User {
 
   /**
    * simple index of polls this forAny has created:
-   * key: poll mockId, val: (throwaway) boolean
+   * key: forAny mockId, val: (throwaway) boolean
    */
-  polls: { [id: string]: boolean }
+  polls?: { [id: string]: boolean }
 
   /**
    * index of votes this forAny has cast
-   * key: mockId of poll vote was cast in
+   * key: mockId of forAny vote was cast in
    * val: mockId of vote cast
    */
-  votes: { [id: string]: string }
+  votes?: { [id: string]: string }
 
 }
+
+export type UserEntity = User & Entity;
+
+export type RequiredUserField = 'id'|'name'|'image'|'isVerified';
+export type OptionalUserField = 'polls'|'votes';
+export type UserField = RequiredUserField|OptionalUserField;

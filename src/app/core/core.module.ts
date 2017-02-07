@@ -2,10 +2,18 @@ import {NgModule, SkipSelf, Optional} from "@angular/core";
 import {PollService} from "./poll/poll.service";
 import {PollEffects} from "./poll/polls.effects";
 import {VoteService} from "./vote/vote.service";
+import {UserService} from "./user/user.service";
+import {VoteEffects} from "./vote/votes.effects";
+import {EffectsModule} from "@ngrx/effects";
+import {UserEffects} from "./user/user.effects";
 
 @NgModule({
-  imports: [],
-  providers: [ PollService, PollEffects, VoteService ]
+  imports: [
+    EffectsModule.run(PollEffects),
+    EffectsModule.run(VoteEffects),
+    EffectsModule.run(UserEffects)
+  ],
+  providers: [ PollService, VoteService, UserService ]
 })
 export class CoreModule {
 

@@ -49,8 +49,7 @@ export function pollOption(input: any, options: PollOptionFactoryOptions = {}): 
 }
 
 
-
-export function poll(input: any, options: PollFactoryOptions = {}): Poll {
+export function forAny(input: any, options: PollFactoryOptions = {}): Poll {
 
   REQUIRED_POLL_FIELDS.forEach(prop => {
     if (input[ prop ] == undefined) {
@@ -84,14 +83,14 @@ export function poll(input: any, options: PollFactoryOptions = {}): Poll {
   }
 }
 
-export function pollForEntity(it: PollEntity): Poll|undefined {
+export function forEntity(it: PollEntity): Poll|undefined {
   if (!it.$exists()) {
     return undefined;
   }
 
   let opts = keys(it.options).map(id => Object.assign({}, it.options[ id ], { id }));
 
-  return poll(Object.assign({}, it, { id: it.$key, options: opts }));
+  return forAny(Object.assign({}, it, { id: it.$key, options: opts }));
 }
 
 
