@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {AngularFireAuth} from "angularfire2";
-import {AppState, getAuthState, getAuthUserId} from "../state";
+import {AppState, getAuthState, getAuthUserId, getAuthUser} from "../state";
 import {Store} from "@ngrx/store";
 import {User} from "../core/user/user.model";
 import * as userFxns from "../core/user/user.functions";
@@ -20,12 +20,14 @@ export class AuthService {
 
   public readonly state$: Observable<AuthState>;
 
+  public readonly sessionUser$: Observable<User|null>;
+
   public readonly sessionUserId$: Observable<string|null>;
 
   constructor(private backend: AngularFireAuth, private store: Store<AppState>) {
 
     this.state$ = store.select(getAuthState);
-
+    this.sessionUser$ = store.select(getAuthUser);
     this.sessionUserId$ = store.select(getAuthUserId);
 
 

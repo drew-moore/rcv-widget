@@ -2,7 +2,7 @@ import {VotesState, VotesActions, PollVotesLoadedAction} from "./votes.state";
 import {sortBy} from "lodash";
 import {Action} from "@ngrx/store";
 import {Vote} from "./vote.models";
-import {votesEqual} from "./vote.functions";
+import * as voteFxns from "./vote.functions";
 
 
 const initialState: VotesState = {
@@ -42,7 +42,7 @@ export function votes(state: VotesState = initialState, action: Action): VotesSt
 
           for (let i = 0; i < sortedVotes.length; i++) {
             next = sortedVotes[ i ];
-            if (!votesEqual(sortedVotes[ i ], next)) {
+            if (!voteFxns.equal(sortedVotes[ i ], next)) {
               dataChanged = true;
               break;
             }

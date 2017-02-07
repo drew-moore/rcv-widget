@@ -13,7 +13,7 @@ export type VoteFactoryOptions = {
   validateChoices?: string[],
   throwOnInvalid?: boolean
 };
-export function vote(input: any, options: VoteFactoryOptions = {}): Vote {
+export function forAny(input: any, options: VoteFactoryOptions = {}): Vote {
   REQUIRED_VOTE_FIELDS.forEach(prop => {
     if (input[ prop ] == undefined) {
       if (options && options.throwOnInvalid) {
@@ -35,15 +35,15 @@ export function vote(input: any, options: VoteFactoryOptions = {}): Vote {
   }
 }
 
-export function voteForEntity(it: VoteEntity): Vote|undefined {
+export function forEntity(it: VoteEntity): Vote|undefined {
   if (!it.$exists()) {
     return undefined;
   }
-  return vote(Object.assign({}, it, { id: it.$key }));
+  return forAny(Object.assign({}, it, { id: it.$key }));
 }
 
 
-export function votesEqual(x: Vote, y: Vote) {
+export function equal(x: Vote, y: Vote) {
   if ((!x && !!y) || (!!x && !y)) {
     return false;
   }

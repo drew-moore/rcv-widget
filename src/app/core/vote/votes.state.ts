@@ -37,8 +37,11 @@ export class PollVotesLoadedAction implements Action {
 
 export class CastVoteAction implements Action {
   public readonly type = VotesActions.CAST_VOTE;
+  public readonly payload: { vote: PartialVote, pollId: string };
 
-  constructor(public readonly payload: PartialVote) {}
+  constructor(vote: PartialVote, pollId: string) {
+    this.payload = { vote, pollId };
+  }
 }
 
 export class VoteCastSuccessAction implements Action {

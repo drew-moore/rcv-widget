@@ -39,9 +39,11 @@ export type PartialVote = {
   [P in OptionalVoteField]?: Vote[P] //optiona;
   }
 
-export type VoteEntity = Entity & {
-  [P in RequiredVoteField|'id'|'owner']: Vote[P]
+export type SerializableVote = {
+  [P in RequiredVoteField|'owner']: Vote[P]
   } & {
-  cast: Moment|string
+  cast: string
 };
+
+export type VoteEntity = Entity & SerializableVote;
 

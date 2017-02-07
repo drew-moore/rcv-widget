@@ -1,5 +1,4 @@
 import {Action} from "@ngrx/store";
-import {createSelector} from "reselect";
 import {User} from "../core/user/user.model";
 
 export type SocialAuthProvider = 'facebook'|'twitter'|'google';
@@ -109,9 +108,3 @@ export function auth(state = initialState, action: Action): AuthState {
 
 export const getAuthUser = (state: AuthState) => state.user;
 
-export const getAuthUserId = createSelector(getAuthUser, (user) => {
-  if (!user) {
-    return null;
-  }
-  return user.id;
-});

@@ -52,7 +52,14 @@ export const getAuthState = (state: AppState) => state.auth;
 export const getUserState = (state: AppState) => state.users;
 
 
-export const getAuthUserId = createSelector(getAuthState, fromAuth.getAuthUserId);
+export const getAuthUser = createSelector(getAuthState, fromAuth.getAuthUser);
+
+export const getAuthUserId = createSelector(getAuthUser, (user) => {
+  if (!user) {
+    return null;
+  }
+  return user.id;
+});
 
 const getActivePollId = createSelector(getWidgetState, fromWidget.getActivePollId);
 

@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import * as moment from "moment";
 import {AngularFireDatabase} from "angularfire2";
 import {Store} from "@ngrx/store";
-import {AppState} from "../../state";
+import {AppState, getPollsState} from "../../state";
 import {
   PartialPoll,
   SerializablePoll,
@@ -16,19 +16,31 @@ import {REQUIRED_POLL_FIELDS, REQUIRED_POLL_OPTION_FIELDS} from "./poll.function
 import {AuthService} from "../../auth/auth.service";
 import {Observable, Observer} from "rxjs";
 import {PushResult} from "../_internal";
+import {PollsState, LoadPollAction} from "./polls.state";
 
 @Injectable()
 export class PollService {
 
-  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService) {
+  public readonly state$: Observable<PollsState>;
 
+  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService) {
+    this.state$ = store.select(getPollsState);
   }
 
   public loadPoll(id: string): Observable<Poll> {
-    return this.observePollEntity(id).map(it => polls.forEntity(it));
+
+    this.state$.take(1).do(state => {
+      if (state.ids.indexOf(id) < 0) {
+        this.store.dispatch(new LoadPollAction(id))
+      }
+    });
+
+    return this.state$.map(state => state.entities[ id ]);
+
+
   }
 
-  private observePollEntity(id: string): Observable<PollEntity> {
+  observePollEntity(id: string): Observable<PollEntity> {
     return this.db.object(`/polls/${id}`)
       .map(it => it as PollEntity);
   }
