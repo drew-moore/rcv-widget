@@ -1,9 +1,10 @@
 import {Action} from "@ngrx/store";
+
 export interface WidgetState {
   activePoll: string|undefined;
 }
 
-const WidgetActions = {
+export const WidgetActions = {
   ACTIVATE_POLL: '[Widget] activatePoll'
 };
 
@@ -27,4 +28,4 @@ export function widget(state: WidgetState = initialState, action: Action): Widge
 }
 
 
-export const getActivePoll = (state: WidgetState) => state.activePoll;
+export const getActivePollId = (state: WidgetState) => state.activePoll;

@@ -1,8 +1,13 @@
 <div class="main-nav">
-  <button md-button>
+  <button md-button (click)="menu.opened ? menu.close() : menu.open()">
     <md-icon>menu</md-icon>
   </button>
+
+  <rcv-auth-widget class="auth-widget-wrapper"></rcv-auth-widget>
 </div>
-<div class="stage">
+<md-sidenav-container class="stage">
   <router-outlet></router-outlet>
-</div>
+  <md-sidenav #menu mode="side" class="main-menu">
+    Login | Signup
+  </md-sidenav>
+</md-sidenav-container>

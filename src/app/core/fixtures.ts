@@ -44,7 +44,7 @@ function color(): string {
 export function mockVoteWithChoices(choices: string[]): Vote {
   return {
     id: mockId('vote'),
-    owner: mockId('user'),
+    owner: mockId('forAny'),
     choices: choices,
     published: false,
     cast: moment()
@@ -56,7 +56,7 @@ export function mockVote(availableChoices: string[]): Vote {
     shuffled = shuffle(availableChoices);
   return {
     id: mockId('vote'),
-    owner: mockId('user'),
+    owner: mockId('forAny'),
     choices: shuffled.slice(0, numChoices),
     published: false,
     cast: moment()
@@ -101,7 +101,7 @@ export function mockPoll(): Poll {
     created: moment(),
     published: true,
     expires: false,
-    owner: mockId('user')
+    owner: mockId('forAny')
   }
 
 }

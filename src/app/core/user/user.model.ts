@@ -1,7 +1,7 @@
 export interface User {
 
   /**
-   * unique identifier for this user
+   * unique identifier for this forAny
    */
   id: string;
 
@@ -16,7 +16,7 @@ export interface User {
   image: string;
 
   /**
-   * whether or not the user has a verified account
+   * whether or not the forAny has a verified account
    */
   isVerified: boolean;
 
@@ -25,13 +25,13 @@ export interface User {
 export interface UserEntity extends User {
 
   /**
-   * simple index of polls this user has created:
+   * simple index of polls this forAny has created:
    * key: poll mockId, val: (throwaway) boolean
    */
   polls: { [id: string]: boolean }
 
   /**
-   * index of votes this user has cast
+   * index of votes this forAny has cast
    * key: mockId of poll vote was cast in
    * val: mockId of vote cast
    */

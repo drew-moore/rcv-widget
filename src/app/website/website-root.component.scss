@@ -10,18 +10,36 @@ $main-nav-height: 64px;
 }
 
 .main-nav {
+  @include flex($align: center, $justify: space-between);
+
   height: $main-nav-height;
   background-color: md-color($md-grey, 800);
   color: md-contrast($md-grey, 800);
   flex: 0 0 $main-nav-height;
-  @include flex($align: center, $justify: space-between);
 
   button[md-button] {
     height: 100%;
+    flex: 0 0;
   }
+
+  .active-poll-prompt {
+    flex: 1 1;
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 300;
+  }
+
+  .auth-widget-wrapper {
+    align-self: stretch;
+  }
+
 }
 
 .stage {
   position: relative;
   flex: 1 1 calc(100% - #{$main-nav-height});
+}
+
+.main-menu {
+  @include flex(column, $justify: space-between);
 }

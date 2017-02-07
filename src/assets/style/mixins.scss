@@ -12,6 +12,18 @@
   font-family: 'Work Sans', Helvetica, Arial, sans-serif;
 }
 
+.linklike {
+  color: #4078c0;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+}
+
+
+
 /*********** MEDIA QUERIES ***********/
 
 $sm: 480px;
@@ -95,15 +107,7 @@ $xl: 1920px;
 
 @mixin control-bar($position) {
   background-color: md-color($md-grey, 300);
-  @include flex(row, space-around, center);
-
-  @include mq-lt-md {
-    padding: 10px 5px;
-  }
-
-  @include mq-gt-sm {
-    padding: 15px 2%;
-  }
+  @include flex(row, space-between, center);
 
   @if ($position == bottom) {
     border-top: 2px solid md-color($md-grey, 400);

@@ -1,0 +1,58 @@
+import {Injectable} from "@angular/core";
+import {AngularFireAuth} from "angularfire2";
+import {AppState, getAuthState} from "../state";
+import {Store} from "@ngrx/store";
+import {User} from "../core/user/user.model";
+import * as userFxns from "../core/user/user.functions";
+import {
+  LoginSuccessAction,
+  SocialAuthProvider,
+  LoginAction,
+  LogoutAction,
+  AuthState,
+  PasswordSignupAction
+} from "./auth.state";
+import {Observable} from "rxjs";
+import FirebaseError = firebase.FirebaseError;
+
+@Injectable()
+export class AuthService {
+
+  public readonly state$: Observable<AuthState>;
+
+  constructor(private backend: AngularFireAuth, private store: Store<AppState>) {
+
+    this.state$ = store.select(getAuthState);
+
+    this.backend.take(1).subscribe(val => {
+      /*
+       * The store always initializes to an unauthenticated state - we don't know whether a user is authenticated until the
+       * app is bootstrapped and we get this first tick from the backend svc. So, we listen for that tick, and if indeed
+       * we have an authenticated user, update (essentially reinitialize) the store accordingly.
+       *
+       * From there, all changes are triggered by login/logout events. The limitation here is that if a user logs in/out in
+       * another tab, that won't be updated here until refresh. If we need to support that, we can do a combineLatest(backend, state),
+       * and compare each pair of values to see if they don't match.
+       * */
+      let user: User|null = userFxns.forAuthState(val);
+      if (user != null) {
+        this.store.dispatch(new LoginSuccessAction(user));
+      }
+    })
+  }
+
+  public login(input: SocialAuthProvider|{ email: string, password: string }) {
+    this.store.dispatch(new LoginAction(input));
+  }
+
+  public logout() {
+    this.store.dispatch(new LogoutAction());
+  }
+
+  public signup(input: { email: string, password: string, name: string }) {
+    this.store.dispatch(new PasswordSignupAction(input));
+  }
+
+
+}
+

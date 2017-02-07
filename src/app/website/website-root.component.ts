@@ -1,4 +1,8 @@
 import {Component, OnInit} from "@angular/core";
+import {Observable} from "rxjs";
+import {Poll} from "../core/poll/poll.models";
+import {Store} from "@ngrx/store";
+import {AppState, getActivePoll} from "../state";
 
 @Component({
   selector: 'rcv-website-root',
@@ -7,7 +11,12 @@ import {Component, OnInit} from "@angular/core";
 })
 export class WebsiteRootComponent implements OnInit {
 
-  constructor() { }
+  activePoll: Observable<Poll>;
+
+  constructor(private store: Store<AppState>) {
+    this.activePoll = this.store.select(getActivePoll);
+    this.activePoll.subscribe(x => console.log(x));
+  }
 
   ngOnInit() {
   }

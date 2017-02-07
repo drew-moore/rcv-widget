@@ -1,6 +1,6 @@
 import {Component, OnInit} from "@angular/core";
 import {Store} from "@ngrx/store";
-import {AppState} from "../app.state.module";
+import {AppState} from "../state";
 import {ActivatedRoute} from "@angular/router";
 import "rxjs/add/operator/distinctUntilChanged";
 import {ActivatePollAction} from "./widget.state";

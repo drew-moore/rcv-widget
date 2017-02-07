@@ -2,11 +2,11 @@ import {BrowserModule} from "@angular/platform-browser";
 import {NgModule} from "@angular/core";
 import {AppComponent} from "./app.component";
 import {CoreModule} from "./core/core.module";
-import {RouterModule} from "@angular/router";
-import {AppInfrastructureModule} from "./app.infrastructure.module";
-import {AppStateModule} from "./app.state.module";
+import {RouterModule, Routes} from "@angular/router";
+import {AppInfrastructureModule} from "./infrastructure";
+import {AppStateModule} from "./state";
 
-export const APP_ROUTES = [
+export const APP_ROUTES: Routes = [
   {
     path: 'embed',
     loadChildren: 'app/widget/widget.module#WidgetModule'
@@ -31,7 +31,6 @@ export const APP_ROUTES = [
     AppStateModule,
 
     CoreModule
-
   ],
   bootstrap: [AppComponent]
 })

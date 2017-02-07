@@ -1,0 +1,116 @@
+@import "../../../assets/style/all";
+
+$twitter-blue: #00aced;
+$facebook-blue: #3b5998;
+$google-orange: #dd4b39;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+div:not(.or), button[md-button] {
+  height: 100%;
+}
+
+.login-dialog {
+  @include flex($align: center);
+}
+
+.fabs {
+  @include flex($align: center);
+
+  .social-fab {
+    margin: 0 5px;
+    display: block;
+    &.fb {
+      background-color: $facebook-blue;
+
+      .fa-facebook-f {
+        color: white;
+      }
+
+    }
+
+    &.twitter {
+      background-color: $twitter-blue;
+
+      .fa-twitter {
+        color: white;
+      }
+    }
+
+    &.github {
+      background-color: white;
+    }
+
+    &.google {
+      background-color: $google-orange;
+
+      .fa-google {
+        color: white
+      }
+    }
+
+    &.email {
+      background-color: md-color($rcv-app-primary, 800);
+      color: md-contrast($rcv-app-primary, 800);
+      align-self: center;
+      flex-shrink: 0;
+    }
+  }
+
+}
+
+div.input-wrapper {
+  height: auto;
+
+  md-input-container {
+    .placeholder {
+      color: md-contrast($rcv-app-primary, 800);
+    }
+  }
+
+}
+
+.or {
+  font-size: 0.8em;
+  font-weight: 500;
+  font-style: italic;
+  margin: 0 10px;
+}
+
+.submit-btn {
+  margin-right: 10px;
+}
+
+.active-user {
+  @include flex($align: center);
+  height: 100%;
+}
+
+div.user-avatar {
+  padding: 0 10px;
+  height: 40px;
+  img, .placeholder {
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+  }
+
+  .placeholder {
+    border: 1px dashed md-color($md-grey, 100);
+  }
+
+  .user-name {
+    margin-right: 5px;
+  }
+
+}
+
+.auth-pending-spinner {
+  height: 50px;
+  width: 50px;
+  margin-right: 15px;
+}
+

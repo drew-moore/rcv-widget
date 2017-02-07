@@ -9,7 +9,7 @@
 // Define the palettes for your theme using the Material Design palettes available in palette.scss
 // (imported above). For each palette, you can optionally specify a default, lighter, and darker
 // hue.
-$rcv-app-primary: md-palette($md-deep-purple);
+$rcv-app-primary: md-palette($md-deep-purple, 800, 600, 900);
 $rcv-app-accent: md-palette($md-orange, 400, 200, 700);
 
 // The warn palette is optional (defaults to red).
@@ -31,4 +31,6 @@ $dark-grey-border: md-color($md-grey, 700);
 
 $font-size-sm: 16px;
 $font-size-md: 18px;
-$font-size-lg: 20px;
+$font-size-lg: 18px;
+
+$fairvote-purple: #553285;

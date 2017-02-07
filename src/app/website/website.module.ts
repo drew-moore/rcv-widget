@@ -3,14 +3,17 @@ import {WebsiteRootComponent} from "./website-root.component";
 import {SharedModule} from "../shared/shared.module";
 import {WebsiteRoutingModule} from "./website.routing.module";
 import {WidgetModule} from "../widget/widget.module";
+import {SplashComponent} from "./splash/splash.component";
+import {AuthComponentsModule} from "../auth/auth-components.module";
 
 @NgModule({
   imports: [
     WebsiteRoutingModule,
     SharedModule,
-    WidgetModule
+    WidgetModule,
+    AuthComponentsModule
   ],
-  declarations: [ WebsiteRootComponent ]
+  declarations: [ WebsiteRootComponent, SplashComponent ]
 })
 export class WebsiteModule {
 }

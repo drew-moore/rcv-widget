@@ -1,4 +1,3 @@
-import {storeFreeze} from "ngrx-store-freeze";
 import * as fromWidget from "./widget/widget.state";
 import {WidgetState, widget} from "./widget/widget.state";
 import * as fromPolls from "./core/poll/polls.state";
@@ -13,17 +12,27 @@ import * as fromVotes from "./core/vote/votes.state";
 import {VotesState} from "./core/vote/votes.state";
 import {polls} from "./core/poll/polls.reducer";
 import {votes} from "./core/vote/votes.reducer";
+import {PollEffects} from "./core/poll/polls.effects";
+import {EffectsModule} from "@ngrx/effects";
+import {VoteEffects} from "./core/vote/votes.effects";
+import {ResultsState} from "./results/results.models";
+import {results} from "./results/results.reducer";
+import {AuthState, auth} from "./auth/auth.state";
 
 export interface AppState {
+  auth: AuthState,
   polls: PollsState,
   votes: VotesState,
-  widget: WidgetState
+  widget: WidgetState,
+  results: ResultsState
 }
 
 export const reducers = {
+  auth: auth,
   polls: polls,
   votes: votes,
-  widget: widget
+  widget: widget,
+  results: results
 };
 
 
@@ -33,8 +42,12 @@ export const getPollsState = (state: AppState) => state.polls;
 
 export const getVotesState = (state: AppState) => state.votes;
 
+export const getResultsState = (state: AppState) => state.results;
 
-const getActivePollId = createSelector(getWidgetState, fromWidget.getActivePoll);
+export const getAuthState = (state: AppState) => state.auth;
+
+
+const getActivePollId = createSelector(getWidgetState, fromWidget.getActivePollId);
 
 const getPollIds = createSelector(getPollsState, fromPolls.getPollIds);
 
@@ -48,6 +61,7 @@ const getPollIndexedVotes = createSelector(getVotesState, fromVotes.getVotesInde
 
 
 export const getActivePoll = createSelector(getActivePollId, getPollEntities, (id, entities) => {
+  console.log(entities);
   if (id == undefined) {
     return undefined
   } else {
@@ -56,7 +70,7 @@ export const getActivePoll = createSelector(getActivePollId, getPollEntities, (i
 });
 
 export const getVotesForActivePoll = createSelector(getActivePollId, getPollIndexedVotes, getVotes, (activePollId, votesByPoll, votes) => {
-  if (activePollId == undefined) {
+  if (!activePollId || !votesByPoll[ activePollId ]) {
     return [];
   } else {
     return votesByPoll[ activePollId ].map(id => votes[ id ]);
@@ -64,7 +78,7 @@ export const getVotesForActivePoll = createSelector(getActivePollId, getPollInde
 });
 
 
-const devReducer: ActionReducer<AppState> = compose(storeFreeze, combineReducers)(reducers);
+const devReducer: ActionReducer<AppState> = compose(combineReducers)(reducers);
 
 const productionReducer: ActionReducer<AppState> = combineReducers(reducers);
 
@@ -77,7 +91,9 @@ export function makeReducer(state: any, action: any) {
 @NgModule({
   imports: [
     StoreModule.provideStore(makeReducer),
-    StoreDevtoolsModule.instrumentOnlyWithExtension()
+    StoreDevtoolsModule.instrumentOnlyWithExtension(),
+    EffectsModule.run(PollEffects),
+    EffectsModule.run(VoteEffects)
   ],
   exports: [
     StoreModule, StoreDevtoolsModule
