@@ -1,4 +1,4 @@
-import {Component, OnInit, trigger, transition, style, animate, Inject} from "@angular/core";
+import {Component, OnInit, trigger, transition, style, animate, Inject, Optional} from "@angular/core";
 import {Observable, BehaviorSubject, Subject} from "rxjs";
 import {values} from "lodash";
 import {Poll} from "../core/poll/poll.models";
@@ -9,7 +9,8 @@ import {
   SelectionAddedAction,
   SelectionsReordereddAction,
   SelectionRemovedAction,
-  ActionTypeChangedAction
+  ActionTypeChangedAction,
+  UserInfoActiveAction
 } from "./ballot.state";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PollService} from "../core/poll/poll.service";
@@ -18,13 +19,19 @@ import {VoteService} from "../core/vote/vote.service";
 import {PartialVote} from "../core/vote/vote.models";
 import {MediaMonitor, MatchMedia, BreakPointRegistry} from "@angular/flex-layout";
 import {getBallotState} from "../state";
+import {UserService} from "../core/user/user.service";
+import {IsWebsite} from "../index";
+import {User} from "../core/user/user.model";
 
 @Component({
   selector: 'rcv-ballot-container',
   template: `<rcv-ballot-view [state]="state$ | async" 
                            [poll]="poll | async" 
+                           [sessionUser]="sessionUser$ | async"
+                           [showUserInfo]="!isWebsite"
                            (selectionAdded)="addSelection($event)" 
                            (selectionsReordered)="reorderSelections($event)" 
+                           (userInfoActive)="userInfoActive($event)"
                            (cast)="castBallot($event)" 
                            (selectionRemoved)="removeSelection($event)"
                            (actionTypeChange)="actionTypeChanged($event)"
@@ -75,11 +82,22 @@ export class BallotContainerComponent implements OnInit {
 
   options: Observable<BallotOption[]>;
 
-  constructor(private pollSvc: PollService, private voteSvc: VoteService, private route: ActivatedRoute, private router: Router, private store: Store<any>,
+  isWebsite: boolean;
+
+  sessionUser$: Observable<User>;
+
+  constructor(private pollSvc: PollService,
+              private voteSvc: VoteService,
+              private route: ActivatedRoute,
+              private router: Router,
+              private store: Store<any>,
+              private userService: UserService,
+              @Optional() @Inject(IsWebsite) isWebsite: boolean,
               mediaMonitor: MediaMonitor,
               @Inject(BreakPointRegistry) breakpoints: any,
               @Inject(MatchMedia) mediaWatcher: any) {
 
+    this.isWebsite = isWebsite || false;
 
     this.poll$ = this.pollSvc.activePoll$;
 
@@ -87,6 +105,7 @@ export class BallotContainerComponent implements OnInit {
 
     this.options = this.state$.map(state => values(state.options));
 
+    this.sessionUser$ = userService.sessionUser$;
 
     //TODO watch @angular/flex-layout bug #65 and remove this when it's resolved
     breakpoints.items.forEach((bp: any) => mediaWatcher.observe(bp.mediaQuery).subscribe((x: any) => {
@@ -137,6 +156,10 @@ export class BallotContainerComponent implements OnInit {
 
   actionTypeChanged(type: 'click'|'drag') {
     this.store.dispatch(new ActionTypeChangedAction(type));
+  }
+
+  userInfoActive(val: boolean) {
+    this.store.dispatch(new UserInfoActiveAction(val));
   }
 
 

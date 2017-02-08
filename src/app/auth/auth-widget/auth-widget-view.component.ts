@@ -91,9 +91,13 @@ import {SocialAuthProvider, AuthState} from "../auth.state";
 export class AuthWidgetViewComponent implements OnInit {
 
   @Input() state: AuthState;
+  @Input() dark: boolean;
+
   @Output() login: EventEmitter<SocialAuthProvider|{ email: string, password: string }> = new EventEmitter<SocialAuthProvider|{ email: string, password: string }>();
   @Output() logout = new EventEmitter();
   @Output() signup: EventEmitter<{ email: string, password: string, name: string }> = new EventEmitter<{ email: string, password: string, name: string }>();
+
+  @Output() active = new EventEmitter();
 
   constructor() {
 
@@ -137,10 +141,16 @@ export class AuthWidgetViewComponent implements OnInit {
   }
 
   loginClicked() {
+    if (this.mode == 'INACTIVE') {
+      this.active.emit(true);
+    }
     this.mode = 'LOGIN'
   }
 
   signupClicked() {
+    if (this.mode == 'INACTIVE') {
+      this.active.emit(true);
+    }
     this.mode = 'SIGNUP';
   }
 
@@ -169,6 +179,7 @@ export class AuthWidgetViewComponent implements OnInit {
     } else {
       this.emailSignup();
     }
+    this.active.emit(false);
   }
 
   emailLogin() {

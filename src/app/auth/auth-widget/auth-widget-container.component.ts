@@ -1,4 +1,4 @@
-import {Component} from "@angular/core";
+import {Component, Output, EventEmitter, Input} from "@angular/core";
 import {Observable} from "rxjs";
 import {AuthState, SocialAuthProvider} from "../auth.state";
 import {AuthService} from "../auth.service";
@@ -6,13 +6,16 @@ import {AuthService} from "../auth.service";
 @Component({
   selector: 'rcv-auth-widget',
   template: `
-    <rcv-auth-widget-view [state]="state$ | async" (login)="login($event)" (logout)="logout()" (signup)="signup($event)"></rcv-auth-widget-view>
+    <rcv-auth-widget-view [state]="state$ | async" [dark]="dark" (login)="login($event)" (logout)="logout()" (signup)="signup($event)" (active)="active.emit($event)"></rcv-auth-widget-view>
   `,
   styles: [ `:host{display: block;}` ]
 })
 export class AuthWidgetContainerComponent {
 
   state$: Observable<AuthState>;
+
+  @Output() active: EventEmitter<boolean> = new EventEmitter();
+  @Input() dark: boolean;
 
   constructor(private authSvc: AuthService) {
     this.state$ = authSvc.state$;
@@ -29,5 +32,6 @@ export class AuthWidgetContainerComponent {
   signup(info: { email: string, password: string, name: string }) {
     this.authSvc.signup(info);
   }
+
 
 }

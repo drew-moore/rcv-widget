@@ -18,10 +18,10 @@
         <button md-mini-fab class="social-fab twitter" (click)="socialLogin('twitter')">
           <md-icon fontSet="fa" fontIcon="fa-twitter"></md-icon>
         </button>
-        <div class="or">or</div>
+        <div class="or height-auto">or</div>
       </div>
 
-      <div class="input-wrapper" [formGroup]="infoForm">
+      <div class="input-wrapper" [formGroup]="infoForm" [class.dark]="dark">
         <md-input-container>
           <input md-input
                  type="text"
@@ -70,7 +70,7 @@
      class="active-user">
 
   <button md-button (click)="doLogout()" class="logout-btn" *ngIf="userMenuShown" [@slideRight]>LOGOUT</button>
-  <div class="user-name">{{state.user.name.split(' ')[0]}}</div>
+  <!-- <div class="user-name height-auto">{{state.user.name.split(' ')[0]}}</div>-->
   <div class="user-avatar" (click)="showUserMenu()">
     <img [src]="state.user.image" *ngIf="!!state.user.image">
     <div class="placeholder" *ngIf="!state.user.image"></div>

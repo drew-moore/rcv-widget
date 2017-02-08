@@ -140,7 +140,58 @@ $pane-margin: 5px;
     border-top: 2px solid md-color($md-grey, 400);
     background-color: md-color($md-grey, 100);
     color: md-contrast($md-grey, 100);
-    @include flex(row, space-around, center);
+    @include flex(row, space-between, center);
+
+    .casting-as {
+      @include flex($align: center);
+      color: $fairvote-purple;
+      margin-left: 15px;
+      transform-origin: 0;
+
+      & > * {
+        margin: 0 5px;
+      }
+
+      .as {
+        font-style: italic;
+        font-size: 0.85em;
+        font-weight: 600;
+        margin-right: 10px;
+      }
+
+      .user-avatar {
+        position: relative;
+        bottom: -4px;
+        margin-right: 2px;
+
+        img, .placeholder {
+          border-radius: 50%;
+          width: 35px;
+          height: 35px;
+        }
+      }
+
+      .user-name {
+        white-space: nowrap;
+      }
+
+      .anonymous-user {
+        @include flex($align: center);
+
+        .label {
+          text-transform: uppercase;
+          margin-right: 10px;
+        }
+      }
+
+      .non-anonymous-user {
+        @include flex($align: center);
+      }
+    }
+
+
+
+
   }
 
 }
@@ -163,3 +214,5 @@ $pane-margin: 5px;
 .invisible {
   opacity: 0;
 }
+
+

@@ -12,7 +12,8 @@ export interface BallotState {
   numSelected: number,
   ids: string[],
   options: { [id: string]: BallotOption; },
-  lastAction: 'click'|'drag'
+  lastAction: 'click'|'drag',
+  userInfoActive: boolean
 }
 
 export const BallotActions = {
@@ -20,7 +21,8 @@ export const BallotActions = {
   SELECTION_ADDED: '[Ballot] selectionAdded',
   SELECTION_REMOVED: '[Ballot] selectionRemoved',
   SELECTIONS_REORDERED: '[Ballot] selectionsReordered',
-  ACTION_TYPE_CHANGE: '[Ballot] actionTypeChange'
+  ACTION_TYPE_CHANGE: '[Ballot] actionTypeChange',
+  USER_INFO_ACTIVE: '[Ballot] userInfoActive'
 };
 
 
@@ -32,27 +34,30 @@ export class InitializeBallotAction implements Action {
 
 export class SelectionAddedAction implements Action {
   type = BallotActions.SELECTION_ADDED;
-
   constructor(public payload: BallotOption) {}
 }
 
 export class SelectionRemovedAction implements Action {
   type = BallotActions.SELECTION_REMOVED;
-
   constructor(public payload: BallotOption) {}
 }
 
 
 export class SelectionsReordereddAction implements Action {
   type = BallotActions.SELECTIONS_REORDERED;
-
   constructor(public payload: { fromIndex: number, toIndex: number }) {}
 }
 
 export class ActionTypeChangedAction implements Action {
   type = BallotActions.ACTION_TYPE_CHANGE;
-
   constructor(public payload: string) {}
+}
+
+
+export class UserInfoActiveAction implements Action {
+  type = BallotActions.USER_INFO_ACTIVE;
+
+  constructor(public payload: boolean) {}
 }
 
 export type BallotAction = InitializeBallotAction|SelectionAddedAction|SelectionRemovedAction|SelectionsReordereddAction|ActionTypeChangedAction;
@@ -80,7 +85,8 @@ function initializeBallotState(poll: Poll, extantVote?: Vote): BallotState {
     numSelected: 0,
     ids: opts.map(opt => opt.id),
     options: opts.reduce((result, next) => Object.assign(result, { [next.id]: next }), {}),
-    lastAction: 'click'
+    lastAction: 'click',
+    userInfoActive: false
   };
 
 }
@@ -123,7 +129,8 @@ const initialState: BallotState = {
   options: {},
   numSelected: 0,
   ids: [],
-  lastAction: 'click'
+  lastAction: 'click',
+  userInfoActive: false
 };
 
 export function ballot(state: BallotState = initialState, action: BallotAction): BallotState {
@@ -139,7 +146,8 @@ export function ballot(state: BallotState = initialState, action: BallotAction):
         ids: state.ids,
         options: updatedOptions,
         numSelected: state.numSelected + 1,
-        lastAction: state.lastAction
+        lastAction: state.lastAction,
+        userInfoActive: state.userInfoActive
       };
 
     case BallotActions.SELECTION_REMOVED:
@@ -163,7 +171,8 @@ export function ballot(state: BallotState = initialState, action: BallotAction):
         ids: state.ids,
         options: updatedOptions,
         numSelected: state.numSelected - 1,
-        lastAction: state.lastAction
+        lastAction: state.lastAction,
+        userInfoActive: state.userInfoActive
       };
 
 
@@ -190,11 +199,15 @@ export function ballot(state: BallotState = initialState, action: BallotAction):
         ids: state.ids,
         options: newOptions,
         numSelected: state.numSelected,
-        lastAction: state.lastAction
+        lastAction: state.lastAction,
+        userInfoActive: state.userInfoActive
       };
 
     case BallotActions.ACTION_TYPE_CHANGE:
       return Object.assign({}, state, { lastAction: action.payload });
+
+    case BallotActions.USER_INFO_ACTIVE:
+      return Object.assign({}, state, { userInfoActive: action.payload });
 
     default:
       return state;

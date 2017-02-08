@@ -5,11 +5,13 @@ import {SharedModule} from "../shared/shared.module";
 import {BallotContainerComponent} from "./ballot-container.component";
 import {SlotComponent} from "./view/slot/slot.component";
 import {OrderSlotsPipe} from "./view/order-slots.pipe";
+import {AuthComponentsModule} from "../auth/auth-components.module";
 
 @NgModule({
   imports: [
     SharedModule,
-    SortablejsModule
+    SortablejsModule,
+    AuthComponentsModule
   ],
   declarations: [ BallotContainerComponent, BallotViewComponent, SlotComponent, OrderSlotsPipe ]
 })

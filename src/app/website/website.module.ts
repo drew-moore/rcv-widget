@@ -5,6 +5,7 @@ import {WebsiteRoutingModule} from "./website.routing.module";
 import {WidgetModule} from "../widget/widget.module";
 import {SplashComponent} from "./splash/splash.component";
 import {AuthComponentsModule} from "../auth/auth-components.module";
+import {IsWebsite} from "../index";
 
 @NgModule({
   imports: [
@@ -13,7 +14,10 @@ import {AuthComponentsModule} from "../auth/auth-components.module";
     WidgetModule,
     AuthComponentsModule
   ],
-  declarations: [ WebsiteRootComponent, SplashComponent ]
+  declarations: [ WebsiteRootComponent, SplashComponent ],
+  providers: [
+    { provide: IsWebsite, useValue: true }
+  ]
 })
 export class WebsiteModule {
 }

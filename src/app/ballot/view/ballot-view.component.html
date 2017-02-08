@@ -58,7 +58,19 @@
 </div>
 
 <div class="bottom bar">
-  <button md-raised-button color="primary" class="cast-btn" (click)="castVote()" [disabled]="isPristine()" tabindex="1">
-    Vote and see results
-  </button>
+  <div></div>
+  <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center" *ngIf="!state?.userInfoActive">
+    <button md-raised-button
+            color="primary"
+            class="cast-btn"
+            (click)="castVote()"
+            [disabled]="isPristine()"
+            tabindex="1">
+      cast my vote
+    </button>
+  </div>
+  <div [style.opacity]="showUserInfo && !isPristine() ? 1 : 0.5" class="casting-as">
+    <div *ngIf="!!sessionUser" class="as">as</div>
+    <rcv-auth-widget [dark]="true" (active)="setUserInfoActive($event)"></rcv-auth-widget>
+  </div>
 </div>

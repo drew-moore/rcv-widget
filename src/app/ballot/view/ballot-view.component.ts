@@ -15,11 +15,13 @@ import {
   transition,
   style,
   animate,
-  ChangeDetectorRef
+  ChangeDetectorRef,
+  state
 } from "@angular/core";
 import {values} from "lodash";
 import {Poll} from "../../core/poll/poll.models";
 import {BallotState, BallotOption} from "../ballot.state";
+import {User} from "../../core/user/user.model";
 
 @Component({
   selector: 'rcv-ballot-view',
@@ -44,6 +46,11 @@ import {BallotState, BallotOption} from "../ballot.state";
       transition('nonempty => void', [
         animate('300ms linear', style({ opacity: 0, transform: 'translateX(-100px)' }))
       ])
+    ]),
+    trigger('userInfo', [
+      state('void', style({ opacity: 0, width: 0, transform: 'scaleX(0)' })),
+      state('*', style({ opacity: 1, width: '*', transform: 'scaleX(1)' })),
+      transition('* <=> void', animate(200))
     ])
   ],
   // host: {'[@host]':''}
@@ -54,11 +61,14 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
 
   @Input() poll: Poll;
   @Input() state: BallotState;
+  @Input() sessionUser: User;
+  @Input() showUserInfo: boolean;
 
   @Output() cast = new EventEmitter();
   @Output() selectionAdded: EventEmitter<BallotOption> = new EventEmitter();
   @Output() selectionRemoved: EventEmitter<BallotOption> = new EventEmitter();
   @Output() selectionsReordered: EventEmitter<{ fromIndex: number, toIndex: number }> = new EventEmitter();
+  @Output() userInfoActive = new EventEmitter();
 
   @Output() actionTypeChange: EventEmitter<'click'|'drag'> = new EventEmitter();
 
@@ -144,6 +154,10 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
     }
     this.selectionRemoved.emit(slot);
 
+  }
+
+  setUserInfoActive(val: boolean) {
+    this.userInfoActive.emit(val);
   }
 
 
