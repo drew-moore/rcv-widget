@@ -9,8 +9,7 @@ import {
   SelectionAddedAction,
   SelectionsReordereddAction,
   SelectionRemovedAction,
-  ActionTypeChangedAction,
-  UserInfoActiveAction
+  ActionTypeChangedAction
 } from "./ballot.state";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PollService} from "../core/poll/poll.service";
@@ -26,28 +25,26 @@ import {User} from "../core/user/user.model";
 @Component({
   selector: 'rcv-ballot-container',
   template: `<rcv-ballot-view [state]="state$ | async" 
-                           [poll]="poll | async" 
+                           [poll]="poll$ | async" 
                            [sessionUser]="sessionUser$ | async"
                            [showUserInfo]="!isWebsite"
                            (selectionAdded)="addSelection($event)" 
                            (selectionsReordered)="reorderSelections($event)" 
-                           (userInfoActive)="userInfoActive($event)"
                            (cast)="castBallot($event)" 
                            (selectionRemoved)="removeSelection($event)"
                            (actionTypeChange)="actionTypeChanged($event)"
                            *ngIf="!(showMobileLayout$ | async)"
                            >       
             </rcv-ballot-view>
-<!--          <rcv-ballot-mobile [state]="state$ | async" 
-                             [poll]="poll | async" 
+          <rcv-ballot-mobile-view [state]="state$ | async" 
+                             [poll]="poll$ | async" 
                              [options]="options | async"
                              (selectionAdded)="addSelection($event)" 
                              (selectionsReordered)="reorderSelections($event)" 
                              (cast)="castBallot($event)" 
                              (selectionRemoved)="removeSelection($event)"
-                              *ngIf="(showMobileLayout$ | async)"
-                             >
-          </rcv-ballot-mobile>-->
+                              *ngIf="(showMobileLayout$ | async) && (isReady$ | async)">
+          </rcv-ballot-mobile-view>
 
 `,
   styles: [
@@ -84,6 +81,8 @@ export class BallotContainerComponent implements OnInit {
 
   isWebsite: boolean;
 
+  isReady$: Observable<boolean>;
+
   sessionUser$: Observable<User>;
 
   constructor(private pollSvc: PollService,
@@ -102,6 +101,8 @@ export class BallotContainerComponent implements OnInit {
     this.poll$ = this.pollSvc.activePoll$;
 
     this.state$ = this.poll$.take(1).flatMap(poll => this.initializeAndReturnBallotState(poll));
+
+    this.isReady$ = Observable.combineLatest(this.poll$.filter(it => it != null), this.state$).take(1).map(() => true).startWith(false);
 
     this.options = this.state$.map(state => values(state.options));
 
@@ -158,9 +159,6 @@ export class BallotContainerComponent implements OnInit {
     this.store.dispatch(new ActionTypeChangedAction(type));
   }
 
-  userInfoActive(val: boolean) {
-    this.store.dispatch(new UserInfoActiveAction(val));
-  }
 
 
 }

@@ -6,6 +6,7 @@ import {BallotContainerComponent} from "./ballot-container.component";
 import {SlotComponent} from "./view/slot/slot.component";
 import {OrderSlotsPipe} from "./view/order-slots.pipe";
 import {AuthComponentsModule} from "../auth/auth-components.module";
+import {BallotMobileComponent} from "./view/mobile-view/ballot-mobile.component";
 
 @NgModule({
   imports: [
@@ -13,7 +14,7 @@ import {AuthComponentsModule} from "../auth/auth-components.module";
     SortablejsModule,
     AuthComponentsModule
   ],
-  declarations: [ BallotContainerComponent, BallotViewComponent, SlotComponent, OrderSlotsPipe ]
+  declarations: [ BallotContainerComponent, BallotViewComponent, SlotComponent, OrderSlotsPipe, BallotMobileComponent ]
 })
 export class BallotModule {
 }

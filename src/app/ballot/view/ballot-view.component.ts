@@ -68,7 +68,6 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
   @Output() selectionAdded: EventEmitter<BallotOption> = new EventEmitter();
   @Output() selectionRemoved: EventEmitter<BallotOption> = new EventEmitter();
   @Output() selectionsReordered: EventEmitter<{ fromIndex: number, toIndex: number }> = new EventEmitter();
-  @Output() userInfoActive = new EventEmitter();
 
   @Output() actionTypeChange: EventEmitter<'click'|'drag'> = new EventEmitter();
 
@@ -149,15 +148,11 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
   }
 
   removeSelection(slot: BallotOption) {
-    if (this.state.lastAction == 'drag') {
-      this.actionTypeChange.emit('click');
+    if (this.state.lastAction == 'click') {
+      this.actionTypeChange.emit('drag');
     }
     this.selectionRemoved.emit(slot);
 
-  }
-
-  setUserInfoActive(val: boolean) {
-    this.userInfoActive.emit(val);
   }
 
 

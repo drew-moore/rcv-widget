@@ -1,0 +1,65 @@
+<div class="top-bar">
+  {{poll?.prompt}}
+</div>
+<div class="slot-container" *ngIf="mode == 'select'" [@selectContainer]>
+  <div class="instructions">
+    <div>Tap choices to add them to your ballot</div>
+    <div style="font-size: 15px;">(you can reorder them in the next step).</div>
+  </div>
+  <div class="slot"
+       *ngFor="let opt of randomizedOptions()"
+       (click)="selectionClicked(opt)"
+       [class.selected]="opt.selectedIndex >= 0"
+       (swipe)="swiped($event, opt)">
+    <div class="index">
+      <div class="value">
+        {{opt.selectedIndex >= 0 ? opt.selectedIndex + 1 : ''}}
+      </div>
+    </div>
+    <div class="content">
+      <div class="text">{{opt.text}}</div>
+    </div>
+  </div>
+</div>
+<div class="slot-container" *ngIf="mode == 'reorder'" [@reorderContainer]>
+  <div class="instructions ">Drag choices up or down to reorder</div>
+  <div class="slot-container" [sortablejs] [sortablejsOptions]="sortableOptions">
+    <div class="slot" *ngFor="let opt of selectedOptions(); let i = index">
+      <div class="index">
+        <div class="value purple">
+          {{i + 1}}
+        </div>
+      </div>
+      <div class="content">
+        <div class="text">{{opt.text}}</div>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="bottom-bar">
+
+  <button md-raised-button
+          color="primary"
+          class="next-btn"
+          (click)="gotoReorder()"
+          *ngIf="mode =='select'"
+          [@selectContainer]
+          [disabled]="isPristine()">next
+  </button>
+  <button md-icon-button
+          (click)="gotoSelect()"
+          *ngIf="mode =='reorder'"
+          [@reorderContainer]
+          class="back-btn"
+          color="primary">
+    <md-icon>chevron_left</md-icon>
+  </button>
+  <button md-raised-button
+          color="primary"
+          class="next-btn"
+          (click)="submit()"
+          *ngIf="mode =='reorder'"
+          [@reorderContainer]>cast my vote
+  </button>
+  <div *ngIf="mode == 'reorder'"></div>
+</div>

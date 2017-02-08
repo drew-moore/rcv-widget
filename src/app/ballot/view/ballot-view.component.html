@@ -59,7 +59,7 @@
 
 <div class="bottom bar">
   <div></div>
-  <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center" *ngIf="!state?.userInfoActive">
+  <div fxLayout="row" fxLayoutGap="5px" fxLayoutAlign="center">
     <button md-raised-button
             color="primary"
             class="cast-btn"
@@ -70,7 +70,6 @@
     </button>
   </div>
   <div [style.opacity]="showUserInfo && !isPristine() ? 1 : 0.5" class="casting-as">
-    <div *ngIf="!!sessionUser" class="as">as</div>
-    <rcv-auth-widget [dark]="true" (active)="setUserInfoActive($event)"></rcv-auth-widget>
+    <rcv-auth-widget [dark]="true"></rcv-auth-widget>
   </div>
 </div>

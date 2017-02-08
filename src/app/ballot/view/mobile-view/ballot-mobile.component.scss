@@ -1,0 +1,81 @@
+@import "../../../../assets/style/all";
+
+:host {
+  display: flex !important;
+  flex-direction: column;
+  align-items: stretch;
+  justify-content: space-around;
+  box-sizing: border-box;
+  height: 100%;
+
+  .top-bar, .bottom-bar {
+    background-color: md-color($md-grey, 100);
+    padding: 10px 5px;
+    flex: 0 0 auto;
+  }
+
+  .bottom-bar {
+    border-top: 1px solid md-color($md-grey, 400);
+    @include flex(row, $justify: space-around, $align: center);
+
+    button {
+      margin: 5px;
+      text-transform: uppercase;
+    }
+
+  }
+
+  .top-bar {
+    border-bottom: 1px solid md-color($md-grey, 400);
+    text-align: center;
+  }
+
+  .slot-container {
+    @include flex(column);
+    flex: 1 1;
+
+    .instructions {
+      text-align: center;
+      font-weight: 400;
+      padding: 5px;
+      font-size: 15px;
+    }
+
+    .slot {
+      @include flex;
+      flex: 1 1 56px;
+      border-bottom: 1px solid md-color($md-grey, 400);
+
+      &.selected {
+        background-color: md-color($rcv-app-primary, A100);
+      }
+
+      .index {
+        flex: 0 0 56px;
+        text-align: center;
+        font-weight: 600;
+        padding: 5px 15px;
+        border-right: 1px solid md-color($md-grey, 100);
+        @include flex(column, space-around, center);
+
+        .value.purple {
+          color: $fairvote-purple;
+        }
+
+      }
+
+      .content {
+        @include flex($align: center);
+        flex: 1 1 calc(100% - 1.5em);
+        padding: 0 5px;
+      }
+
+    }
+
+  }
+
+  .back-btn {
+    //  color: md-color($md-red, A200);
+  }
+
+}
