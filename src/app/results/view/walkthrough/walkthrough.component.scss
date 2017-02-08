@@ -1,4 +1,4 @@
-@import "../../../assets/style/all";
+@import "../../../../assets/style/all";
 
 :host {
   @include flex(column);
@@ -19,7 +19,8 @@
 
   .top-bar {
     @include control-bar(top);
-    flex-wrap: wrap;
+    border-top: 2px solid md-color($md-grey, 400);
+
 
     .options-menu-div {
       background-color: md-color($md-grey, 900);
@@ -42,6 +43,7 @@
 
     .left {
       @include flex;
+      min-width: 125px;
     }
 
     .round-details {
@@ -58,7 +60,6 @@
       .vote-totals {
         @include flex(row);
         flex-wrap: wrap;
-        font-size: 1.1em;
 
         .active, .inactive {
           cursor: pointer;
@@ -67,10 +68,12 @@
         .active {
           font-weight: 500;
           margin-right: 10px;
+          font-size: 1.1em;
         }
 
         .inactive {
           font-weight: 300;
+
         }
 
       }
@@ -120,22 +123,17 @@
 
   }
 
-  .bars-container {
+  .bars-container.md-sidenav-container {
     position: relative;
     overflow-x: hidden;
-
-    @include mq-gt-sm {
-      flex: 1 1 calc(100% - 180px);
-    }
-
-    @include mq-sm-md {
-      flex: 1 1 calc(100% - 130px);
-    }
+    overflow-y: auto;
+    flex: 1 1;
 
   }
 
   .bars {
     overflow-x: hidden;
+    min-height: 100%;
     padding-top: 20px;
     @include flex(column, space-around);
 

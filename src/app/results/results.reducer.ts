@@ -127,6 +127,10 @@ export function results(state: ResultsState, action: Action): ResultsState {
         newRounds = computeRounds(options, votes, [ ...state.removed, toRemove ]),
         newOutcome = newRounds[ newRounds.length - 1 ].outcome as PollOutcome;
 
+      if (!newOutcome) {
+        debugger;
+      }
+
       return {
         currRound: 0,
         rounds: newRounds,

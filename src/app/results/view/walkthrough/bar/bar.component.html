@@ -29,19 +29,30 @@
   <span class="vote-total">
     <span class="value"> = {{state.votes.count}} </span>
    <span class="label">votes</span>
-    <span class="pct"><span class="value">{{currPct}}%</span><span class="label"> of {{state.votes.outOf}}</span> </span>
+    <!-- <span class="pct"><span class="value">{{currPct}}%</span><span class="label"> of {{state.votes.outOf}}</span> </span>-->
   </span>
 </div>
 <div class="info"
      [class.dark]="!showBar"
      [style.max-width.%]="showBar ? barWidth : 100"
      [@info]>
-  <div class="color-swatch" [style.background-color]="option.color"></div>
-  <div class="text">{{option.text}}</div>
-  <div [ngSwitch]="detailState" class="detail" [@details]="initialized ? 'initialized' : 'uninitialized'">
+
+  <div class="image-and-text">
+    <div class="color-swatch" [style.background-color]="option.color"></div>
+    <div class="text">{{option.text}}</div>
+  </div>
+
+  <div [ngSwitch]="detailState"
+       class="detail"
+       [@details]="initialized ? 'initialized' : 'uninitialized'">
     <div *ngSwitchCase="'stats'" class="detail-row stats" [class.invisible]="isHovered && currRound > 0">
-      <div class="curr-pct">{{currPct}}%</div>
-      <div class="vote-count"><span class="value">{{state.votes.count}}</span><span class="key">votes</span></div>
+      <div class="curr-pct"
+           fxHide="false"
+           fxHide.xs="true">{{currPct}}%
+      </div>
+      <div class="vote-count"
+           fxHide="false"
+           fxHide.xs="true"><span class="value">{{state.votes.count}}</span><span class="key">votes</span></div>
       <div class="delta"
            *ngFor="let delta of visibleDeltas"
            [@delta]="isHovered ? 'out' : 'up'"
@@ -50,8 +61,8 @@
       </div>
     </div>
     <div *ngSwitchCase="'last-eliminated'" class="last-eliminated">
-      <span class="eliminated">eliminated!</span>
       <span [style.color]="option.color" class="count">-{{totalVotesOut}}</span>
+      <span class="eliminated">eliminated!</span>
     </div>
     <div *ngSwitchCase="'eliminated'" class="detail-row eliminated">
       Eliminated in round {{roundEliminated + 1}}

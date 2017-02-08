@@ -1,0 +1,105 @@
+@import '../../../../assets/style/all';
+
+$v-padding: calc(1em + 10px);
+$bar-height-large: 50px;
+$bar-height-small: 20px;
+
+:host {
+  @include flex(column);
+  position: relative;
+  background-color: #fafafa;
+  /* making the padding = 1em , setting the font size on the 50% label to < 1em and top to 0 means it'll never overlap
+     the top line of content */
+
+  padding: $v-padding 0;
+
+  &.minimal {
+    padding: 5px 0;
+  }
+
+  .winner-minimized {
+    color: white;
+  }
+
+  .fifty-pct-line {
+    position: absolute;
+    border-left: 1px dashed rgba(0, 0, 0, 0.5);
+    left: calc(50% + 1px);
+    top: 0;
+    bottom: 0;
+    font-size: 0.9em;
+    padding-left: 2px;
+    z-index: 1;
+  }
+
+  .winner-details, .runner-up-details {
+    flex: 0 0 auto;
+    padding: 2px 15px;
+
+    @include mq-lt-md {
+      padding: 2px 0;
+    }
+
+    background-color: $app-background-opacity-50;
+    z-index: 2;
+  }
+
+  .winner-details {
+    align-self: flex-start;
+  }
+
+  .runner-up-details {
+    align-self: flex-end;
+    text-align: right;
+  }
+
+  .bar {
+    @include flex;
+    z-index: 0;
+    height: $bar-height-large;
+    background-color: md-color($md-grey, 100);
+    transition: 250ms linear height;
+
+    .segment {
+      flex: 0 0; //basis set dynamically
+      min-width: 0; //prevent winner segment from fitting winner text when it overflows in minimal view
+      &.winner {
+        z-index: 3;
+        background-color: md-color($md-blue, 700);
+        border-right: 1px solid md-color($md-grey, 100);
+        transform-origin: 0;
+        font-size: 1.2em;
+      }
+
+      &.runner-up {
+        z-index: 2;
+        background-color: md-color($md-grey, 700);
+        border-left: 1px solid md-color($md-grey, 100);
+        transform-origin: 100%;
+      }
+
+    }
+
+    &.minimal {
+      height: auto;
+
+      .segment.winner {
+        padding: 5px;
+        white-space: nowrap;
+        overflow-x: visible;
+        font-size: 0.85em;
+      }
+
+    }
+
+  }
+
+  &.small {
+
+    .bar {
+      height: $bar-height-small;
+    }
+
+  }
+
+}

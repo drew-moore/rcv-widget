@@ -10,8 +10,8 @@ import {
   Output,
   EventEmitter
 } from "@angular/core";
-import {PollOption} from "../../../core/poll/poll.models";
-import {OptionStateSnapshot, OutboundVoteTransfer, InboundVoteTransfer} from "../../results.models";
+import {PollOption} from "../../../../core/poll/poll.models";
+import {OptionStateSnapshot, OutboundVoteTransfer, InboundVoteTransfer} from "../../../results.models";
 import {Subject, BehaviorSubject, Observable} from "rxjs";
 
 @Component({
@@ -122,7 +122,7 @@ export class BarComponent implements OnInit {
 
 
   constructor() {
-    this.parentHovered$ = this.parentHovers$.skip(1).debounceTime(150).share();
+    this.parentHovered$ = this.parentHovers$.skip(1).debounceTime(250).share();
     this.parentHovered$.subscribe(val => {
       this.barHovered.emit(val);
     })
@@ -189,9 +189,7 @@ export class BarComponent implements OnInit {
 
   get totalVotesOut() {
     let transfers: OutboundVoteTransfer[];
-
     if (this.rounds[ this.roundEliminated ].votesOut == undefined) {
-      debugger;
       throw 'why no votes out? (TODO improve this msg)'
     } else {
       transfers = this.rounds[ this.roundEliminated ].votesOut as OutboundVoteTransfer[];

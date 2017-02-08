@@ -1,6 +1,6 @@
 import {Component, OnInit, Input, style, animate, transition, trigger} from "@angular/core";
-import {PollOption} from "../../../core/poll/poll.models";
-import {SuffixedPipe} from "../../../shared/pipes/suffixed.pipe";
+import {PollOption} from "../../../../core/poll/poll.models";
+import {SuffixedPipe} from "../../../../shared/pipes/suffixed.pipe";
 
 @Component({
   selector: 'rcv-segment',

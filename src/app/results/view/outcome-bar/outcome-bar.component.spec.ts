@@ -1,20 +1,20 @@
 /* tslint:disable:no-unused-variable */
 import {async, ComponentFixture, TestBed} from "@angular/core/testing";
-import {ResultsViewComponent} from "./results-view.component";
+import {OutcomeBarComponent} from "./outcome-bar.component";
 
-describe('ResultsViewComponent', () => {
-  let component: ResultsViewComponent;
-  let fixture: ComponentFixture<ResultsViewComponent>;
+describe('OutcomeBarComponent', () => {
+  let component: OutcomeBarComponent;
+  let fixture: ComponentFixture<OutcomeBarComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultsViewComponent ]
+      declarations: [ OutcomeBarComponent ]
     })
       .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ResultsViewComponent);
+    fixture = TestBed.createComponent(OutcomeBarComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

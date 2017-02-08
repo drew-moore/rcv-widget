@@ -1,0 +1,43 @@
+@import '../../assets/style/all';
+
+:host {
+  height: 100%;
+  @include flex(column, $justify: space-between);
+}
+
+.outcome-bar-wrapper {
+  flex: 1 1 100%;
+  transition: 250ms linear flex;
+  @include flex(row, $justify: space-around, $align: center);
+
+  @include mq-lt-md {
+    margin: 0 5px;
+  }
+
+  @include mq-gt-sm {
+    margin: 0 20px;
+  }
+
+  &.small {
+    flex: 0 0 auto;
+  }
+
+  .inner {
+    @include flex(column, $align: center);
+    width: 100%;
+  }
+
+  rcv-outcome-bar {
+    width: 100%;
+  }
+
+}
+
+.walkthrough-wrapper {
+  min-height: 0;
+}
+
+.show-details-btn {
+  background-color: $fairvote-purple;
+  color: white;
+}

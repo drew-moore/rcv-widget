@@ -1,4 +1,4 @@
-import {keys} from "lodash";
+import {keys, values} from "lodash";
 import {PollOption} from "../core/poll/poll.models";
 import {Vote} from "../core/vote/vote.models";
 import {OptionStateSnapshot, PollOutcome, OptionOutcome, RoundState} from "./results.models";
@@ -17,7 +17,9 @@ export function computeRounds(pollOptions: PollOption[], votes: Vote[], removed:
   let eliminated: string[] = [],
     nextElimination: string;
 
-  let optMap: { [id: string]: PollOption } = pollOptions.reduce((result, opt) => Object.assign(result, { [opt.id]: opt }), {});
+  let optMap: { [id: string]: PollOption } = pollOptions.reduce((result, opt) => Object.assign(result, { [opt.id]: opt }), {}),
+    optionIds = pollOptions.map(opt => opt.id);
+
 
   let unremovedOptions = pollOptions.filter(opt => removed.indexOf(opt.id) < 0);
 
@@ -30,6 +32,7 @@ export function computeRounds(pollOptions: PollOption[], votes: Vote[], removed:
   let inactiveVotes: Vote[] = [];
 
   let transfers: { [id: string]: number };
+  let totalTransfersOut: number = 0;
 
   let outcome: PollOutcome|false;
 
@@ -39,15 +42,18 @@ export function computeRounds(pollOptions: PollOption[], votes: Vote[], removed:
   let rounds: RoundState[] = [];
 
   do {
-    currDistribution = distribute(votes, [ ...removed, ...eliminated ]);
+    currDistribution = distribute(votes, optionIds, [ ...removed, ...eliminated ]);
     activeVotes = getActiveVotes(currDistribution);
     inactiveVotes = currDistribution[ EXHAUSTED ];
     outcome = checkForOutcome(currDistribution);
 
     if (round > 0) {
-      transfers = keys(currDistribution).reduce((result, next) => {
+      transfers = keys(currDistribution)
+        .filter(id => eliminated.indexOf(id) < 0 && removed.indexOf(id) < 0)
+        .reduce((result, next) => {
         return Object.assign(result, { [next]: currDistribution[ next ].length - prevDistribution[ next ].length })
       }, {});
+      totalTransfersOut = values(transfers).reduce((sum, next) => sum + next, 0)
     }
 
 
@@ -99,11 +105,15 @@ export function computeRounds(pollOptions: PollOption[], votes: Vote[], removed:
     });
 
     round++;
-    eliminated = [ ...eliminated, lowestScorer(currDistribution) ];
+    eliminated = [ ...eliminated, lowestScorer(currDistribution, [ ...removed, ...eliminated ]) ];
     prevDistribution = currDistribution;
 
   } while (round < unremovedOptions.length - 1);
 
+  if (!rounds[ rounds.length - 1 ].outcome) {
+    debugger;
+    checkForOutcome(currDistribution);
+  }
 
   return rounds;
 
@@ -151,12 +161,15 @@ function getActiveVotes(distribution: VoteDistribution) {
   return keys(distribution).filter(x => x !== EXHAUSTED).reduce((result, id) => result.concat(distribution[ id ]), [] as Vote[]);
 }
 
-function lowestScorer(dist: VoteDistribution): string {
-  return keys(dist).filter(x => x !== EXHAUSTED).sort((x, y) => dist[ x ].length - dist[ y ].length)[ 0 ];
+function lowestScorer(dist: VoteDistribution, ignore: string[]): string {
+  return keys(dist)
+    .filter(id => id !== EXHAUSTED && ignore.indexOf(id) < 0)
+    .sort((x, y) => dist[ x ].length - dist[ y ].length)[ 0 ];
 }
 
-function distribute(votes: Vote[], removed: string[]): VoteDistribution {
-  let initObj: VoteDistribution = { EXHAUSTED: [] };
+function distribute(votes: Vote[], options: string[], removed: string[]): VoteDistribution {
+  let initObj: VoteDistribution =
+    options.reduce((result, id) => Object.assign(result, { [id]: [] as Vote[] }), { EXHAUSTED: [] });
 
   return votes.reduce((result, vote) => {
     let assignTo = assignVote(vote.choices, removed);

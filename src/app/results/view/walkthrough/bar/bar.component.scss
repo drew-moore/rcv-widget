@@ -1,10 +1,18 @@
-@import "./../../../../assets/style/all";
+@import "./../../../../../assets/style/all";
 
 :host {
   @include flex;
   position: relative;
-  flex: 1 1 65px;
   margin: 10px 5px;
+
+  @include mq-lt-md {
+    padding: 5px;
+    flex: 1 1 calc(2em + 4px);
+  }
+
+  @include mq-gt-sm {
+    flex: 1 1 60px;
+  }
 
   .rect {
     transform-origin: 0;
@@ -14,6 +22,7 @@
     &.active {
       z-index: 3;
     }
+
 
     .delta-detail {
       overflow-x: visible;
@@ -80,19 +89,24 @@
   @include flex($align: center);
   z-index: 1;
   color: md-contrast($md-grey, 800);
-
+  flex-wrap: wrap;
   @include mq-lt-md {
     & > * {
-      margin: 0 10px;
+      margin: 0 5px;
     }
 
   }
 
   @include mq-gt-sm {
     & > * {
-      margin: 0 5px;
+      margin: 0 10px;
     }
 
+  }
+
+  .image-and-text {
+    @include flex($align: center);
+    flex-wrap: nowrap;
   }
 
   &.dark {
@@ -160,6 +174,7 @@
 .last-eliminated {
   .count {
     font-weight: 600;
+    margin-right: 5px;
   }
 
 }

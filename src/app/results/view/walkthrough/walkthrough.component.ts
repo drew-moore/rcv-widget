@@ -10,18 +10,18 @@ import {
   ViewChild
 } from "@angular/core";
 import {values, keys} from "lodash";
-import {Poll, PollOption} from "../../core/poll/poll.models";
-import {ResultsState, OptionStateSnapshot, RoundState, PollOutcome} from "../results.models";
+import {Poll, PollOption} from "../../../core/poll/poll.models";
+import {ResultsState, OptionStateSnapshot, RoundState, PollOutcome} from "../../results.models";
 import {MdSidenav} from "@angular/material";
 
 @Component({
-  selector: 'rcv-results-view',
+  selector: 'rcv-walkthrough',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  templateUrl: './results-view.component.html',
-  styleUrls: [ './results-view.component.scss' ],
+  templateUrl: './walkthrough.component.html',
+  styleUrls: [ './walkthrough.component.scss' ],
 
 })
-export class ResultsViewComponent implements OnInit, OnChanges {
+export class WalkthroughComponent implements OnInit, OnChanges {
 
   @Input() poll: Poll;
   @Input() state: ResultsState;

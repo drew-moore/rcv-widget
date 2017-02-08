@@ -1,0 +1,15 @@
+<div class="fifty-pct-line" [@line] *ngIf="!minimize">
+  <strong>50%</strong> needed to win
+</div>
+
+<div class="winner-details" [innerHtml]="winnerText" [@winnerText] *ngIf="!minimize"></div>
+<div class="bar" [class.minimal]="minimize">
+  <div class="segment winner"
+       [style.flex-basis.%]="leftBarPercentage()"
+       [@segment]
+       [style.max-width.%]="leftBarPercentage()">
+    <span *ngIf="minimize" class="winner-minimized" [innerHtml]="winnerText"></span>
+  </div>
+  <div class="segment runner-up" [style.flex-basis.%]="rightBarPercentage()" [@segment]></div>
+</div>
+<div class="runner-up-details" [@runnerUpText] *ngIf="!minimize && !isTie()" [innerHtml]="runnerUpText"></div>

@@ -1,8 +1,9 @@
 <div class="detail"
      [class.first-choice]="firstChoice"
      [mdTooltip]="tooltipText"
+     [style.color]="firstChoice ? 'white' : option.color"
      mdTooltipPosition="below">
-  <span class="count">{{firstChoice ? ' first choices :   ' : '+ '}} {{count}}</span>
+  <span class="count">{{firstChoice ? '' : ' + '}}{{count}}{{firstChoice ? ' first choices ' : ''}}</span>
 </div>
 <div class="rect"
      [style.background-color]="showColor ? option.color : '#424242'"
