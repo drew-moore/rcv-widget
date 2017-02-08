@@ -1,0 +1,11 @@
+<div class="text" *ngIf="option != null">
+  <span>{{option.text}}</span>
+
+</div>
+<button md-icon-button
+        class="remove"
+        (click)="remove.emit()"
+        [class.visible]="hovered$ | async"
+        *ngIf="selected && option != null">
+  <md-icon fontSet="fa" fontIcon="fa-close" class="icon"></md-icon>
+</button>

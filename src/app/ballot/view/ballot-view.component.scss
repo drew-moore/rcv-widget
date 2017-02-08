@@ -1,0 +1,165 @@
+@import "../../../assets/style/all";
+
+$bottom-bar-height: 90px;
+$pane-margin: 5px;
+
+:host {
+  @include flex(column, space-between);
+  height: 100%;
+}
+
+.panes {
+  flex: 2 1;
+  @include flex(row, space-around);
+  margin: 10px;
+  @include mq-lt-md {
+    margin: 5px;
+  }
+
+  @include mq-lg {
+    margin: 10px 20px;
+  }
+
+  @include mq-xl {
+    margin: 10px 40px;
+  }
+
+  .pane {
+    flex: 1 1 calc(50% - #{$pane-margin});
+    padding: 5px;
+    //  background-color: md-color($md-grey, 500);
+    //  background-color: md-color($md-grey, 500);
+    //border: 1px solid md-color($md-grey, 400);
+    max-width: 700px;
+    margin: 0 5px;
+    @include flex(column, space-between);
+
+    &.selected {
+      border: 2px solid md-color($rcv-app-primary, 500);
+      background-color: md-color($rcv-app-primary, 50);
+      border-radius: 15px;
+
+      .selected-options {
+        flex: 1 1 auto;
+        @include flex(column, space-between);
+      }
+
+      &.drag-active .slot .index {
+        opacity: 0;
+      }
+
+    }
+
+    .above, .below {
+      flex: 0 0 auto;
+      margin: 5px 0;
+      box-sizing: border-box;
+      text-align: center;
+    }
+
+    .above {
+      @include flex(column, $align: center);
+
+      .subtitle {
+        font-size: 0.8em;
+      }
+
+    }
+
+    .slot {
+      flex: 1 1 65px;
+      margin-bottom: 10px;
+    }
+
+  }
+
+}
+
+.selected-pane-inner {
+  @include flex;
+  flex-grow: 1;
+
+  .index-pane {
+    flex: 0 0 auto;
+    @include flex(column, space-around);
+
+    .index-wrapper {
+      @include flex(column, $justify: space-around);
+    }
+
+    .index {
+      font-weight: 700;
+      align-self: center;
+      border-radius: 50%;
+      padding: 4px;
+      margin: 5px;
+      color: md-color($rcv-app-primary, 600);
+      text-align: center;
+      transition: 100ms ease opacity;
+      flex-shrink: 0;
+
+      &.empty {
+        opacity: 0.4;
+      }
+
+      @include mq-xs {
+      }
+
+    }
+
+  }
+
+  .slots-pane {
+    flex: 1 1 auto;
+    @include flex(column, space-between);
+  }
+
+}
+
+.flex-placeholder {
+  opacity: 0;
+}
+
+.bar {
+
+  @include mq-lt-md {
+    padding: 10px;
+  }
+
+  @include mq-gt-sm {
+    padding: 15px;
+  }
+
+  &.top {
+    flex: 0 0 auto;
+    text-align: center;
+  }
+
+  &.bottom {
+    flex: 0 0 90px;
+    border-top: 2px solid md-color($md-grey, 400);
+    background-color: md-color($md-grey, 100);
+    color: md-contrast($md-grey, 100);
+    @include flex(row, space-around, center);
+  }
+
+}
+
+.prompt {
+  font-weight: 300;
+  font-size: 1.6em;
+}
+
+.my-ballot-label, .available-choices-label {
+  font-size: 0.85em;
+  font-weight: 600;
+  text-transform: uppercase;
+}
+
+.cast-btn {
+  text-transform: uppercase;
+}
+
+.invisible {
+  opacity: 0;
+}

@@ -18,6 +18,7 @@ import * as fromAuth from "./auth/auth.state";
 import {AuthState, auth} from "./auth/auth.state";
 import * as fromUsers from "./core/user/user.state";
 import {UsersState, users} from "./core/user/user.state";
+import {BallotState, ballot} from "./ballot/ballot.state";
 
 
 export interface AppState {
@@ -26,6 +27,7 @@ export interface AppState {
   votes: VotesState,
   users: UsersState,
   widget: WidgetState,
+  ballot: BallotState,
   results: ResultsState
 }
 
@@ -35,6 +37,7 @@ export const reducers = {
   votes: votes,
   users: users,
   widget: widget,
+  ballot: ballot,
   results: results
 };
 
@@ -44,6 +47,8 @@ export const getWidgetState = (state: AppState) => state.widget;
 export const getPollsState = (state: AppState) => state.polls;
 
 export const getVotesState = (state: AppState) => state.votes;
+
+export const getBallotState = (state: AppState) => state.ballot;
 
 export const getResultsState = (state: AppState) => state.results;
 
@@ -89,7 +94,16 @@ export const getVotesForActivePoll = createSelector(getActivePollId, getPollInde
   if (!activePollId || !votesByPoll[ activePollId ]) {
     return [];
   } else {
-    return votesByPoll[ activePollId ].map(id => votes[ id ]);
+    let ret = votesByPoll[ activePollId ].map(id => votes[ id ]).filter(it => {
+      if (!it) {
+        console.log('undefined vote!!');
+
+        debugger;
+      }
+      return !!it;
+    });
+
+    return ret;
   }
 });
 

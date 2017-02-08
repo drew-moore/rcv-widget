@@ -81,7 +81,7 @@ export function votes(state: VotesState = initialState, action: Action): VotesSt
                 //overwrite extant data with new data where they clash
                 Object.assign(result, { [voteId]: Object.assign({}, state.votes[ voteId ], dataVoteMap[ voteId ]) }),
               {}),
-            newVoteIds.reduce((result, voteId) => Object.assign(result, { [voteId]: dataVoteMap[ voteId ] }))
+            newVoteIds.reduce((result, voteId) => Object.assign(result, { [voteId]: dataVoteMap[ voteId ] }), {})
           );
 
 

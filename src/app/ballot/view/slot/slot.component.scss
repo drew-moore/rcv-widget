@@ -1,0 +1,33 @@
+@import "../../../../assets/style/all";
+
+:host {
+  @include flex(row, space-between, center);
+  border-radius: 4px;
+  border: 1px solid md-color($md-grey, 600);
+  background-color: md-color($md-grey, 200);
+  padding: 5px;
+  flex: 1 1 auto;
+  transition: 150ms linear all;
+  cursor: pointer;
+
+  &.empty {
+    border: 1px dashed md-color($md-grey, 600);
+    opacity: 0.4;
+  }
+
+  .remove {
+    transition: opacity 150ms;
+    color: md-color($md-red, 700);
+    opacity: 0;
+
+    @include mq-xs {
+      opacity: 1; //never hide on mobile -- TODO enable long-press there to remove instead
+    }
+
+    &.visible {
+      opacity: 1;
+    }
+
+  }
+
+}

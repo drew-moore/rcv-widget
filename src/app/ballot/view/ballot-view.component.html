@@ -1,3 +1,65 @@
-<p>
-  ballot-view works!
-</p>
+<div class="top bar prompt">
+  {{poll?.prompt}}
+</div>
+<div class="panes">
+  <div class="pane unselected">
+    <div class="above available-choices-label">
+      <div style="font-weight: 400">Rank options in order of choice</div>
+      <div class="subtitle" *ngIf="leftUnselected() > 0">Click or swipe to select your {{numChoices() | suffixed}}
+        choice.
+      </div>
+
+    </div>
+    <rcv-slot class="slot"
+              *ngFor="let slot of unselectedSlots; trackBy: slotId; let i = index"
+              [option]="slot" [selected]="false"
+              [@unselected]="!viewInitialized || slot == null ? 'empty' : 'nonempty'"
+              [attr.tabindex]="slot == null ? -1 : 1"
+              (select)="unselectedClicked(slot)"
+              (swipe)="unselectedClicked(slot)">
+
+      <div *ngIf="slot == null" class="flex-placeholder">x</div>
+    </rcv-slot>
+    <div class="below">
+      <div class="flex-placeholder">x</div>
+    </div>
+  </div>
+  <div class="pane selected" #selected>
+    <div class="above empty">
+      <div class="my-ballot-label">My Choices</div>
+      <div class="subtitle" [class.invisible]="isPristine()">Drag options to reorder</div>
+    </div>
+
+    <div class="selected-pane-inner">
+      <div class="index-pane">
+        <div *ngFor="let slot of selectedSlots; let i = index" class="index-wrapper">
+          <div class="index" [class.empty]="slot == null">
+            {{ i + 1}}
+          </div>
+        </div>
+      </div>
+      <div class="slots-pane" [sortablejs] [sortablejsOptions]="sortableOptions">
+        <rcv-slot class="slot"
+                  *ngFor="let slot of selectedSlots | orderSlots; trackBy: slotId; let i = index;"
+                  [option]="slot" [selected]="true"
+                  [class.empty]="slot == null"
+                  (remove)="removeSelection(slot)"
+                  [attr.tabindex]="slot == null ? -1 : 1"
+                  [@selectedSlot]="!reordering ? 'nonempty' : 'empty'"
+                  (@selectedSlot.start)="animStart()"
+        >
+        </rcv-slot>
+
+      </div>
+    </div>
+    <div class="below empty">
+      <div class="flex-placeholder">x</div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom bar">
+  <button md-raised-button color="primary" class="cast-btn" (click)="castVote()" [disabled]="isPristine()" tabindex="1">
+    Vote and see results
+  </button>
+</div>

@@ -37,6 +37,7 @@ export function forAny(input: any, options: VoteFactoryOptions = {}): Vote {
 
 export function forEntity(it: VoteEntity): Vote|undefined {
   if (!it.$exists()) {
+    debugger;
     return undefined;
   }
   return forAny(Object.assign({}, it, { id: it.$key }));

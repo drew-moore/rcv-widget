@@ -84,6 +84,7 @@ export function forAny(input: any, options: PollFactoryOptions = {}): Poll {
 }
 
 export function forEntity(it: PollEntity): Poll|undefined {
+  console.log('hurr');
   if (!it.$exists()) {
     return undefined;
   }

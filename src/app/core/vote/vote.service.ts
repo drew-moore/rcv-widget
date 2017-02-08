@@ -5,23 +5,38 @@ import {AngularFireDatabase} from "angularfire2";
 import {Store} from "@ngrx/store";
 import {AppState, getVotesState, getVoteEntities} from "../../state";
 import {Observable, Observer} from "rxjs";
-import {VotesState} from "./votes.state";
-import {Vote, PartialVote, SerializableVote} from "./vote.models";
+import {VotesState, CastVoteAction, VoteCastSuccessAction, VotesActions} from "./votes.state";
+import {Vote, PartialVote, SerializableVote, VoteEntity} from "./vote.models";
 import {AuthService} from "../../auth/auth.service";
 import * as votes from "./vote.functions";
 import {PollService} from "../poll/poll.service";
 import {PushResult} from "../_internal";
+import {Actions, toPayload} from "@ngrx/effects";
 
 @Injectable()
 export class VoteService {
 
   private state$: Observable<VotesState>;
 
-  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService, private pollSvc: PollService) {
+  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService, private pollSvc: PollService, private actions: Actions) {
     this.state$ = store.select(getVotesState);
   }
 
-  public castVote(vote: PartialVote, pollId: string): Observable<Vote> {
+
+  public castVote(vote: PartialVote, pollId: string) {
+    this.store.dispatch(new CastVoteAction(vote, pollId));
+
+    //TODO think this (unconventional?) approach through. We emit an action, then wait on
+    //This wouldn't work, e.g. if a user cast multiple votes simultaneously
+
+    return this.actions.ofType(VotesActions.VOTE_CAST_SUCCESS)
+      .take(1)
+      .map(action => action as VoteCastSuccessAction)
+      .map(toPayload);
+
+  }
+
+  doCastVote(vote: PartialVote, pollId: string): Observable<Vote> {
 
 
     /*
@@ -105,7 +120,15 @@ export class VoteService {
   }
 
   observePollVotes(id: string): Observable<Vote[]> {
-    return this.db.list(`/votes/${id}`).map(votes => votes.map((it: SerializableVote) => votes.forEntity(it)));
+    return this.db.list(`/votes/${id}`)
+      .map(list => list.map((it: VoteEntity) => votes.forEntity(it)).filter((it: Vote|undefined) => {
+        if (it == undefined) {
+          console.log('undefined');
+          console.log(it);
+          debugger;
+        }
+        return !!it;
+      }));
   }
 
 
@@ -127,6 +150,6 @@ function prepareSerializableVote(vote: PartialVote, ownerId: string): Serializab
     choices: vote.choices,
     owner: ownerId,
     cast: castString,
-    published: vote.published
+    published: vote.published || false
   }
 }

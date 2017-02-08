@@ -37,7 +37,7 @@ export class VoteEffects {
       .map(action => action as CastVoteAction)
       .map(toPayload)
       .flatMap(info =>
-        this.voteService.castVote(info.vote, info.pollId)
+        this.voteService.doCastVote(info.vote, info.pollId)
           .map(vote => new VoteCastSuccessAction(info.pollId, vote))
       );
 

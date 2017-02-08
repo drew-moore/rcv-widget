@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import * as moment from "moment";
 import {AngularFireDatabase} from "angularfire2";
 import {Store} from "@ngrx/store";
-import {AppState, getPollsState} from "../../state";
+import {AppState, getPollsState, getActivePoll} from "../../state";
 import {
   PartialPoll,
   SerializablePoll,
@@ -23,8 +23,13 @@ export class PollService {
 
   public readonly state$: Observable<PollsState>;
 
+  public readonly activePoll$: Observable<Poll>;
+
   constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService) {
     this.state$ = store.select(getPollsState);
+
+    this.activePoll$ = store.select(getActivePoll).filter(it => !!it);
+
   }
 
   public loadPoll(id: string): Observable<Poll> {
