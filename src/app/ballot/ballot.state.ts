@@ -11,14 +11,16 @@ export type BallotOption = PollOption & {
 export interface BallotState {
   numSelected: number,
   ids: string[],
-  options: { [id: string]: BallotOption; }
+  options: { [id: string]: BallotOption; },
+  lastAction: 'click'|'drag'
 }
 
 export const BallotActions = {
   INITIALIZE: '[Ballot] initialize',
   SELECTION_ADDED: '[Ballot] selectionAdded',
   SELECTION_REMOVED: '[Ballot] selectionRemoved',
-  SELECTIONS_REORDERED: '[Ballot] selectionsReordered'
+  SELECTIONS_REORDERED: '[Ballot] selectionsReordered',
+  ACTION_TYPE_CHANGE: '[Ballot] actionTypeChange'
 };
 
 
@@ -47,7 +49,13 @@ export class SelectionsReordereddAction implements Action {
   constructor(public payload: { fromIndex: number, toIndex: number }) {}
 }
 
-export type BallotAction = InitializeBallotAction|SelectionAddedAction|SelectionRemovedAction|SelectionsReordereddAction;
+export class ActionTypeChangedAction implements Action {
+  type = BallotActions.ACTION_TYPE_CHANGE;
+
+  constructor(public payload: string) {}
+}
+
+export type BallotAction = InitializeBallotAction|SelectionAddedAction|SelectionRemovedAction|SelectionsReordereddAction|ActionTypeChangedAction;
 
 
 function initializeBallotState(poll: Poll, extantVote?: Vote): BallotState {
@@ -71,7 +79,8 @@ function initializeBallotState(poll: Poll, extantVote?: Vote): BallotState {
   return {
     numSelected: 0,
     ids: opts.map(opt => opt.id),
-    options: opts.reduce((result, next) => Object.assign(result, { [next.id]: next }), {})
+    options: opts.reduce((result, next) => Object.assign(result, { [next.id]: next }), {}),
+    lastAction: 'click'
   };
 
 }
@@ -110,10 +119,11 @@ function reorder(current: number[], fromIndex: number, toIndex: number): number[
   return ret;
 }
 
-const initialState = {
+const initialState: BallotState = {
   options: {},
   numSelected: 0,
-  ids: []
+  ids: [],
+  lastAction: 'click'
 };
 
 export function ballot(state: BallotState = initialState, action: BallotAction): BallotState {
@@ -128,7 +138,8 @@ export function ballot(state: BallotState = initialState, action: BallotAction):
       return {
         ids: state.ids,
         options: updatedOptions,
-        numSelected: state.numSelected + 1
+        numSelected: state.numSelected + 1,
+        lastAction: state.lastAction
       };
 
     case BallotActions.SELECTION_REMOVED:
@@ -151,8 +162,10 @@ export function ballot(state: BallotState = initialState, action: BallotAction):
       return {
         ids: state.ids,
         options: updatedOptions,
-        numSelected: state.numSelected - 1
+        numSelected: state.numSelected - 1,
+        lastAction: state.lastAction
       };
+
 
     case BallotActions.SELECTIONS_REORDERED:
       let swap = (action as SelectionsReordereddAction).payload;
@@ -176,8 +189,12 @@ export function ballot(state: BallotState = initialState, action: BallotAction):
       return {
         ids: state.ids,
         options: newOptions,
-        numSelected: state.numSelected
+        numSelected: state.numSelected,
+        lastAction: state.lastAction
       };
+
+    case BallotActions.ACTION_TYPE_CHANGE:
+      return Object.assign({}, state, { lastAction: action.payload });
 
     default:
       return state;

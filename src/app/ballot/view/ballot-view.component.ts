@@ -14,7 +14,8 @@ import {
   trigger,
   transition,
   style,
-  animate
+  animate,
+  ChangeDetectorRef
 } from "@angular/core";
 import {values} from "lodash";
 import {Poll} from "../../core/poll/poll.models";
@@ -59,6 +60,8 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
   @Output() selectionRemoved: EventEmitter<BallotOption> = new EventEmitter();
   @Output() selectionsReordered: EventEmitter<{ fromIndex: number, toIndex: number }> = new EventEmitter();
 
+  @Output() actionTypeChange: EventEmitter<'click'|'drag'> = new EventEmitter();
+
   @ViewChild('selected') selectedPane: ElementRef;
 
   unselectedSlots: Array<BallotOption|null> = [];
@@ -67,29 +70,24 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
   animated: { [id: string]: boolean } = {};
   viewInitialized = false;
 
-  animate: string|null = null;
 
-  currIndices: { [id: string]: number };
+  constructor(private renderer: Renderer, private cdr: ChangeDetectorRef) {};
 
-
-  constructor(private renderer: Renderer) {};
-
-  reordering: boolean = false;
 
   sortableOptions = {
     animation: 150, filter: '.empty',
     onUpdate: (evt: any) => {
-      this.reordering = true;
       setTimeout(() => {
         this.selectionsReordered.emit({ fromIndex: evt.oldIndex, toIndex: evt.newIndex });
       }, 100);
 
     },
     onStart: () => {
-      this.renderer.setElementClass(this.selectedPane.nativeElement, 'drag-active', true);
+      if (this.state.lastAction == 'click') {
+        this.actionTypeChange.emit('drag');
+      }
     },
     onEnd: () => {
-      this.renderer.setElementClass(this.selectedPane.nativeElement, 'drag-active', false);
     }
   };
 
@@ -119,6 +117,10 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
     this.viewInitialized = true;
   }
 
+  numChoices() {
+    return this.selectedSlots.filter(it => it !== null).length + 1;
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
     if (changes[ 'state' ]) {
       this.updateSlots();
@@ -129,62 +131,27 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
     return this.selectedSlots[ 0 ] == null;
   }
 
-  numChoices() {
-    return this.selectedSlots.filter(it => it !== null).length + 1;
-  }
-
   unselectedClicked(slot: BallotOption) {
-    this.reordering = false;
+    if (this.state.lastAction == 'drag') {
+      this.actionTypeChange.emit('click');
+    }
     this.selectionAdded.emit(slot);
   }
 
   removeSelection(slot: BallotOption) {
-    this.reordering = true;
-    setTimeout(() => {
-      this.selectionRemoved.emit(slot);
-      setTimeout(() => {
-        this.reordering = false;
-      }, 500);
-    }, 100);
-  }
-
-  selectedAnimationDone() {
+    if (this.state.lastAction == 'drag') {
+      this.actionTypeChange.emit('click');
+    }
+    this.selectionRemoved.emit(slot);
 
   }
+
 
   slotId(idx: number, val: BallotOption|null) {
     if (val) {
       return val.id + '' + val.selectedIndex;
     }
     return idx;
-  }
-
-
-  update = (change: { fromIndex: number, toIndex: number }) => {
-    console.log(change);
-    this.selectionsReordered.emit(change);
-  };
-
-  /**
-   *
-   * We do this to disable subsequent animations
-   */
-  animateInDone(it: BallotOption|null) {
-    if (!!it) {
-      this.animated[ it.id ] = true;
-    }
-  }
-
-  /**
-   *
-   * We do this to disable subsequent animations
-   */
-  animStart(it: BallotOption|null) {
-
-    this.currIndices = this.selectedSlots.filter(x => x != null)
-      .map(opt => opt as BallotOption) // avoid possibly null error
-      .reduce((result, next) => Object.assign(result, { [next.id]: next.selectedIndex }), {});
-
   }
 
 

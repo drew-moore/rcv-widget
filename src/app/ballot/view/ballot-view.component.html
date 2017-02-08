@@ -45,8 +45,7 @@
                   [class.empty]="slot == null"
                   (remove)="removeSelection(slot)"
                   [attr.tabindex]="slot == null ? -1 : 1"
-                  [@selectedSlot]="!reordering ? 'nonempty' : 'empty'"
-                  (@selectedSlot.start)="animStart()"
+                  [@selectedSlot]="state.lastAction == 'drag' ? 'empty' : 'nonempty'"
         >
         </rcv-slot>
 

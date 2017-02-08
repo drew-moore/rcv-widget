@@ -8,7 +8,8 @@ import {
   BallotOption,
   SelectionAddedAction,
   SelectionsReordereddAction,
-  SelectionRemovedAction
+  SelectionRemovedAction,
+  ActionTypeChangedAction
 } from "./ballot.state";
 import {ActivatedRoute, Router} from "@angular/router";
 import {PollService} from "../core/poll/poll.service";
@@ -26,6 +27,7 @@ import {getBallotState} from "../state";
                            (selectionsReordered)="reorderSelections($event)" 
                            (cast)="castBallot($event)" 
                            (selectionRemoved)="removeSelection($event)"
+                           (actionTypeChange)="actionTypeChanged($event)"
                            *ngIf="!(showMobileLayout$ | async)"
                            >       
             </rcv-ballot-view>
@@ -131,6 +133,10 @@ export class BallotContainerComponent implements OnInit {
       .subscribe(() => {
         this.router.navigate([ 'results' ], { relativeTo: this.route.parent })
       });
+  }
+
+  actionTypeChanged(type: 'click'|'drag') {
+    this.store.dispatch(new ActionTypeChangedAction(type));
   }
 
 
