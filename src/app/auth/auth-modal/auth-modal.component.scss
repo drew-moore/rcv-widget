@@ -1,0 +1,62 @@
+@import "../../../assets/style/all";
+@import "../auth-widget/auth-widget-view.component";
+
+.heading {
+  text-align: center;
+  max-width: 90vw;
+  width: 450px;
+  .title {
+    font-weight: 300;
+    font-size: 1.5em;
+    margin-bottom: 15px;
+  }
+
+
+}
+
+.explanation {
+  text-align: center;
+}
+
+.social-buttons {
+  @include flex($justify: space-around);
+  border-bottom: 1px solid $light-grey-border;
+  border-top: 1px solid $light-grey-border;
+  margin: 15px 5%;
+  padding: 15px 5%;
+
+  button {
+    @extend .social-fab;
+  }
+
+}
+
+.password-signup-form {
+  @include flex(column);
+  md-input-container {
+    margin: 10px 0;
+  }
+}
+
+.submit-row {
+  text-align: center;
+
+  .submit-btn {
+    margin: 15px 0;
+    text-transform: uppercase;
+
+    &:not([disabled]){
+      background-color: $fairvote-purple;
+      color: white;
+    }
+
+  }
+
+}
+
+
+.mode-toggle {
+  @extend .linklike;
+  margin: 10px 0;
+  text-align: center;
+}

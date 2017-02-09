@@ -19,47 +19,46 @@ div:not(.height-auto), button[md-button] {
 
 .fabs {
   @include flex($align: center);
+}
 
-  .social-fab {
-    margin: 0 5px;
-    display: block;
-    &.fb {
-      background-color: $facebook-blue;
+.social-fab {
+  margin: 0 5px;
+  display: block;
+  &.fb {
+    background-color: $facebook-blue;
 
-      .fa-facebook-f {
-        color: white;
-      }
-
+    .fa-facebook-f {
+      color: white;
     }
 
-    &.twitter {
-      background-color: $twitter-blue;
+  }
 
-      .fa-twitter {
-        color: white;
-      }
-    }
+  &.twitter {
+    background-color: $twitter-blue;
 
-    &.github {
-      background-color: white;
-    }
-
-    &.google {
-      background-color: $google-orange;
-
-      .fa-google {
-        color: white
-      }
-    }
-
-    &.email {
-      /*      background-color: md-color($rcv-app-primary, 800);
-            color: md-contrast($rcv-app-primary, 800);*/
-      align-self: center;
-      flex-shrink: 0;
+    .fa-twitter {
+      color: white;
     }
   }
 
+  &.github {
+    background-color: white;
+  }
+
+  &.google {
+    background-color: $google-orange;
+
+    .fa-google {
+      color: white
+    }
+  }
+
+  &.email {
+    /*      background-color: md-color($rcv-app-primary, 800);
+          color: md-contrast($rcv-app-primary, 800);*/
+    align-self: center;
+    flex-shrink: 0;
+  }
 }
 
 div.input-wrapper {

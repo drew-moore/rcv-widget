@@ -206,4 +206,4 @@ export class AuthWidgetViewComponent implements OnInit {
   }
 }
 
-const EMAIL_REGEX = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;
+export const EMAIL_REGEX = /^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/;

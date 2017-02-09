@@ -1,0 +1,55 @@
+<div class="heading">
+  <div class="title">
+    {{mode == 'signup' ? 'Sign Up' : 'Login'}}
+  </div>
+  <div class="message" *ngIf="mode == 'signup'">
+    {{message}}
+  </div>
+  <div class="message" *ngIf="mode == 'login'">
+    Welcome back! Login with:
+  </div>
+</div>
+
+
+<div class="social-buttons">
+  <button md-icon-button class="fb" (click)="socialLogin('facebook')">
+    <md-icon fontSet="fa" fontIcon="fa-facebook-f"></md-icon>
+  </button>
+  <button md-icon-button class="twitter" (click)="socialLogin('twitter')">
+    <md-icon fontSet="fa" fontIcon="fa-twitter"></md-icon>
+  </button>
+  <button md-icon-button class="google" (click)="socialLogin('google')">
+    <md-icon fontSet="fa" fontIcon="fa-google"></md-icon>
+  </button>
+</div>
+
+<div class="explanation bottom">or<span *ngIf="mode == 'signup'"> just tell us</span>:</div>
+
+<div class="password-signup-form" [formGroup]="infoForm">
+  <md-input-container>
+    <input md-input
+           #emailInput
+           type="email"
+           formControlName="email"
+           placeholder="Your Email Address">
+  </md-input-container>
+  <md-input-container>
+    <input md-input
+           type="password"
+           formControlName="password">
+    <md-placeholder class="placeholder">{{mode == 'signup' ? 'A password' : 'Your password'}}</md-placeholder>
+  </md-input-container>
+
+  <md-input-container *ngIf="mode == 'signup'">
+    <input md-input
+           type="text"
+           formControlName="name" placeholder="Your Name">
+  </md-input-container>
+</div>
+
+<div class="submit-row">
+  <button md-raised-button class="submit-btn" (click)="submitForm()" [disabled]="!formValid()">submit</button>
+  <div class="mode-toggle" (click)="switchMode()">
+    {{mode == 'signup' ? 'I already have an account!' : 'I need to create an account!'}}
+  </div>
+</div>

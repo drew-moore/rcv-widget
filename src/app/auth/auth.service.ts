@@ -10,9 +10,11 @@ import {
   LoginAction,
   LogoutAction,
   AuthState,
-  PasswordSignupAction
+  PasswordSignupAction,
+  AuthActions
 } from "./auth.state";
 import {Observable} from "rxjs";
+import {Actions} from "@ngrx/effects";
 import FirebaseError = firebase.FirebaseError;
 
 @Injectable()
@@ -24,7 +26,7 @@ export class AuthService {
 
   public readonly sessionUserId$: Observable<string|null>;
 
-  constructor(private backend: AngularFireAuth, private store: Store<AppState>) {
+  constructor(private backend: AngularFireAuth, private store: Store<AppState>, private actions: Actions) {
 
     this.state$ = store.select(getAuthState);
     this.sessionUser$ = store.select(getAuthUser);
@@ -48,16 +50,24 @@ export class AuthService {
     })
   }
 
-  public login(input: SocialAuthProvider|{ email: string, password: string }) {
+  public login(input: SocialAuthProvider|{ email: string, password: string }): Observable<boolean> {
     this.store.dispatch(new LoginAction(input));
+    return Observable.merge(
+      this.actions.ofType(AuthActions.LOGIN_SUCCESS).take(1).map(() => true),
+      this.actions.ofType(AuthActions.ERROR).take(1).map(() => false)
+    ).take(1);
   }
 
   public logout() {
     this.store.dispatch(new LogoutAction());
   }
 
-  public signup(input: { email: string, password: string, name: string }) {
+  public signup(input: { email: string, password: string, name: string }): Observable<boolean> {
     this.store.dispatch(new PasswordSignupAction(input));
+    return Observable.merge(
+      this.actions.ofType(AuthActions.PASSWORD_SIGNUP_SUCCESS).take(1).map(() => true),
+      this.actions.ofType(AuthActions.ERROR).take(1).map(() => false)
+    ).take(1);
   }
 
 
