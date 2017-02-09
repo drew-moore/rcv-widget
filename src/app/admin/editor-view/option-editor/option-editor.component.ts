@@ -11,6 +11,8 @@ import {PartialPollOption} from "../../../core/poll/poll.models";
 export class OptionEditorComponent implements OnInit {
 
   @Input() option: PartialPollOption;
+  @Input() allowRemove: boolean;
+
   @Output() remove = new EventEmitter();
 
   readonly MIN_TEXT_LENGTH = 3;

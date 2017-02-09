@@ -17,6 +17,7 @@
 </md-input-container>
 
 <button md-icon-button
+        *ngIf="allowRemove"
         class="remove"
         (click)="remove.emit()"
         [style.opacity]="(hovered$ | async) ? 1 : 0"

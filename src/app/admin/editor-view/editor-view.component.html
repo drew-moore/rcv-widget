@@ -25,8 +25,10 @@
         <div class="heading">What are the possible answers?</div>
         <rcv-option-editor *ngFor="let option of options; let i = index"
                            [option]="option"
+                           [allowRemove]="!editingExistentPoll"
                            (remove)="removeOption(i)"></rcv-option-editor>
-        <button md-raised-button class="add-option-btn" (click)="addOption()">ADD ANOTHER</button>
+        <button md-raised-button class="add-option-btn" (click)="addOption()" *ngIf="!editingExistentPoll">ADD ANOTHER
+        </button>
       </div>
     </div>
 
