@@ -1,9 +1,16 @@
+<div *ngIf="state.newVotesPending" class="new-votes-message" [@newVotesMsg]>
+  <span class="message"> New votes have been received! Click to see the latest results:</span>
+  <button md-raised-button (click)="showUpdate.emit()" color="accent">Show updated results</button>
+</div>
 <div class="top-bar">
   <div class="left">
 
     <div class="round-details">
-      <div class="round-no">
+      <div class="round-no" *ngIf="state.currRound < state.rounds.length - 1" [@roundNo]>
         Round {{state.currRound + 1}}
+      </div>
+      <div class="final-result" *ngIf="state.currRound == state.rounds.length - 1" [@roundNo]>
+        FINAL RESULT
       </div>
       <div class="vote-totals">
         <div class="active" [mdTooltip]="totalVotesTooltip" mdTooltipPosition="below">
@@ -85,7 +92,7 @@
 
 
   </div>
-  <md-sidenav #menu mode="side" class="options-menu">
+  <md-sidenav #menu class="options-menu">
     <div class="section exclude">
       <div *ngIf="removedOptions.length > 0" class="currently-excluded">
         <div class="heading">Excluded options</div>
@@ -108,6 +115,9 @@
     <button md-icon-button (click)="menu.opened ? menu.close() : menu.open()">
       <md-icon>menu</md-icon>
     </button>
+  </div>
+  <div class="active-modifiers">
+
   </div>
   <div class="center">
     <button md-mini-fab class="purple" (click)="prevRound.emit()" [disabled]="state.currRound == 0">
@@ -141,6 +151,9 @@
             fxHide.xs="true">
       <md-icon style="transform:rotate(180deg)">replay</md-icon>
     </button>
+
+  </div>
+  <div class="placeholder">
 
   </div>
   <div class="right">

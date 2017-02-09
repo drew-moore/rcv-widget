@@ -52,10 +52,11 @@
       @include flex(column, $justify: space-around);
       text-transform: uppercase;
 
-      .round-no {
+      .round-no, .final-result {
         font-size: 1.3em;
         font-weight: 700;
         margin-right: 10px;
+        min-height: 0;
       }
 
       .vote-totals {
@@ -260,3 +261,18 @@
   }
 }
 
+.new-votes-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: md-color($rcv-app-warn, 300);
+  color: md-contrast($rcv-app-warn, 300);
+  text-align: center;
+  padding: 5px;
+
+  .message {
+    margin-right: 20px;
+    font-weight: 500;
+  }
+}

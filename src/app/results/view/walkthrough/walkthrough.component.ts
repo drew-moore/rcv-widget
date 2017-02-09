@@ -7,7 +7,12 @@ import {
   Output,
   EventEmitter,
   ChangeDetectionStrategy,
-  ViewChild
+  ViewChild,
+  trigger,
+  state,
+  style,
+  transition,
+  animate
 } from "@angular/core";
 import {values, keys} from "lodash";
 import {Poll, PollOption} from "../../../core/poll/poll.models";
@@ -19,6 +24,19 @@ import {MdSidenav} from "@angular/material";
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './walkthrough.component.html',
   styleUrls: [ './walkthrough.component.scss' ],
+  animations: [
+    trigger('roundNo', [
+      state('void', style({ opacity: 0, transform: 'translateX(-50px)', height: 0 })),
+      state('*', style({ opacity: 1, transform: 'translateX(0)', height: '*' })),
+      transition('void => *', animate('150ms 200ms ease-out')),
+      transition('* => void', animate('150ms ease-out'))
+    ]),
+    trigger('newVotesMsg', [
+      state('void', style({ opacity: 0 })),
+      state('*', style({ opacity: 1 })),
+      transition('void => *', animate('150ms'))
+    ]),
+  ]
 
 })
 export class WalkthroughComponent implements OnInit, OnChanges {
@@ -34,6 +52,8 @@ export class WalkthroughComponent implements OnInit, OnChanges {
   @Output() segmentHover = new EventEmitter();
   @Output() remove: EventEmitter<string> = new EventEmitter();
   @Output() unremove: EventEmitter<string> = new EventEmitter();
+  @Output() showUpdate = new EventEmitter();
+
 
   @ViewChild('menu', { read: MdSidenav }) menu: MdSidenav;
 
@@ -48,10 +68,6 @@ export class WalkthroughComponent implements OnInit, OnChanges {
 
   lastRemovedOption: string;
 
-
-  constructor() {
-
-  }
 
   ngOnInit() {
 

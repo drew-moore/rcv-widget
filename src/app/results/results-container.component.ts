@@ -1,7 +1,7 @@
 import {Component, OnInit, trigger, state, style, animate, transition} from "@angular/core";
 import {Store} from "@ngrx/store";
 import {AppState, getResultsState} from "../state";
-import {Observable} from "rxjs";
+import {Observable, Subject, BehaviorSubject} from "rxjs";
 import {Poll} from "../core/poll/poll.models";
 import {Vote} from "../core/vote/vote.models";
 import {
@@ -12,7 +12,9 @@ import {
   SegmentHoveredAction,
   RemoveOptionAction,
   UnremoveOptionAction,
-  RestartAction
+  RestartAction,
+  NewVotesReceivedAction,
+  NewVotesDismissedAction
 } from "./results.reducer";
 import {ResultsState} from "./results.models";
 import {PollService} from "../core/poll/poll.service";
@@ -39,6 +41,7 @@ import {VoteService} from "../core/vote/vote.service";
       (segmentHover)="segmentHover($event)"
       (remove)="removeOption($event)"
       (unremove)="unremoveOption($event)"
+      (showUpdate)="showUpdate$.next()"
     ></rcv-walkthrough>
   `,
   styleUrls: [ './results-container.component.scss' ],
@@ -64,6 +67,8 @@ export class ResultsContainerComponent implements OnInit {
   poll$: Observable<Poll>;
   votes$: Observable<Vote[]>;
 
+  showUpdate$: Subject<any> = new BehaviorSubject(null);
+
   private data$: Observable<{ poll: Poll, votes: Vote[] }>;
 
   state$: Observable<ResultsState>;
@@ -74,19 +79,37 @@ export class ResultsContainerComponent implements OnInit {
 
   constructor(private pollSvc: PollService, private voteSvc: VoteService, private store: Store<AppState>) {
 
+    this.state$ = store.select(getResultsState);
+
 
     this.poll$ = this.pollSvc.activePoll$;
 
-    this.votes$ = this.voteSvc.activePollVotes$;
+
+    /**
+     * begin snippet: async vote updates
+     * */
+    const votes$ = this.voteSvc.activePollVotes$;
+    const initialVotes$ = votes$.take(1);
+    const voteUpdate$ = votes$.skip(1);
+    const showUpdate$ = this.showUpdate$.skip(1); //just skipping the initial null emission
+
+    voteUpdate$.subscribe(() => {
+      this.store.dispatch(new NewVotesReceivedAction());
+    });
+
+    showUpdate$.subscribe(() => {
+      this.store.dispatch(new NewVotesDismissedAction());
+    });
+
+    let acceptedUpdates$ = showUpdate$.withLatestFrom(votes$).map(([ nothing, votes ]) => votes);
+
+    this.votes$ = Observable.merge(initialVotes$, acceptedUpdates$);
+
+    /**
+     * end snippet: async code updates
+     */
 
 
-    /*
-     let poll = mockPoll();
-
-     this.poll$ = Observable.of(poll).share();//this.store.select(getActivePoll);
-
-     this.votes$ = Observable.of(mockVotesForPoll(poll)).share();//this.store.select(getVotesForActivePoll);*/
-    this.state$ = store.select(getResultsState);
 
     this.data$ = Observable.combineLatest(this.poll$, this.votes$).map(([ poll, votes ]) => ({ poll, votes })).share();
 

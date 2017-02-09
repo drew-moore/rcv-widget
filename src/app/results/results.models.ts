@@ -22,7 +22,8 @@ export interface ResultsState {
   hovered: {
     bar?: string,
     segment?: string
-  }
+  },
+  newVotesPending: boolean
 }
 
 

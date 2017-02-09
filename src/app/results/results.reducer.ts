@@ -13,8 +13,9 @@ export const ResultsActions = {
   BAR_HOVERED: '[Results] barHovered',
   SEGMENT_HOVERED: '[Results] segmentHovered',
   OPTION_REMOVED: '[Results] optionRemoved',
-  OPTION_UNREMOVED: '[Results] optionUnremoved'
-
+  OPTION_UNREMOVED: '[Results] optionUnremoved',
+  NEW_VOTES_RECEIVED: '[Results] newVotesReceived',
+  NEW_VOTES_DISMISSED: '[Results] newVotesDismissed',
 };
 
 export class InitializeResultsAction implements Action {
@@ -72,6 +73,14 @@ export class RestartAction implements Action {
   type = ResultsActions.RESTART;
 }
 
+export class NewVotesReceivedAction implements Action {
+  type = ResultsActions.NEW_VOTES_RECEIVED;
+}
+
+export class NewVotesDismissedAction implements Action {
+  type = ResultsActions.NEW_VOTES_DISMISSED;
+}
+
 
 export function results(state: ResultsState, action: Action): ResultsState {
 
@@ -92,7 +101,8 @@ export function results(state: ResultsState, action: Action): ResultsState {
         rounds,
         outcome,
         removed: [],
-        hovered: {}
+        hovered: {},
+        newVotesPending: false
       };
 
     case ResultsActions.NEXT_ROUND:
@@ -136,7 +146,8 @@ export function results(state: ResultsState, action: Action): ResultsState {
         rounds: newRounds,
         outcome: newOutcome,
         removed: [ ...state.removed, toRemove ],
-        hovered: {}
+        hovered: {},
+        newVotesPending: false
       };
 
     case ResultsActions.OPTION_UNREMOVED:
@@ -152,11 +163,18 @@ export function results(state: ResultsState, action: Action): ResultsState {
         rounds: newRounds,
         outcome: newOutcome,
         removed: nowRemoved,
-        hovered: {}
+        hovered: {},
+        newVotesPending: false
       };
 
     case ResultsActions.RESTART:
       return Object.assign({}, state, { currRound: 0 });
+
+    case ResultsActions.NEW_VOTES_RECEIVED:
+      return Object.assign({}, state, { newVotesPending: true });
+
+    case ResultsActions.NEW_VOTES_DISMISSED:
+      return Object.assign({}, state, { newVotesPending: true });
 
 
     default:

@@ -62,7 +62,7 @@ $bar-height-small: 20px;
     .segment {
       flex: 0 0; //basis set dynamically
       min-width: 0; //prevent winner segment from fitting winner text when it overflows in minimal view
-      transition: 500ms 250ms ease-out all;
+      transition: 500ms 250ms ease-out flex-basis;
       &.winner {
         z-index: 3;
         background-color: md-color($md-blue, 700);
