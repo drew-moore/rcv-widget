@@ -3,9 +3,6 @@ import {Observable, BehaviorSubject, Subject} from "rxjs";
 import {FormGroup, FormControl, Validators} from "@angular/forms";
 import {PartialPollOption} from "../../../core/poll/poll.models";
 
-const PRISTINE_PLACEHOLDER = 'Text: The name or a brief description of this option';
-const DIRTY_PLACEHOLDER = 'Text:';
-
 @Component({
   selector: 'rcv-option-editor',
   templateUrl: './option-editor.component.html',
@@ -15,6 +12,9 @@ export class OptionEditorComponent implements OnInit {
 
   @Input() option: PartialPollOption;
   @Output() remove = new EventEmitter();
+
+  readonly MIN_TEXT_LENGTH = 3;
+  readonly MAX_TEXT_LENGTH = 50;
 
 
   private mouseEvents$: Subject<boolean> = new BehaviorSubject(false);
@@ -26,24 +26,35 @@ export class OptionEditorComponent implements OnInit {
   hovered$ = this.mouseEvents$.debounceTime(100);
 
   inputFocused = new BehaviorSubject(false);
-  placeholder: Observable<string>;
+
   textForm = new FormGroup({
     text: new FormControl('', [ Validators.required, Validators.minLength(3), Validators.maxLength(50) ])
   });
 
+  showTextLengthHint: Observable<boolean>;
 
   constructor() {
 
+    const enteredText = this.textForm.controls[ 'text' ].valueChanges.startWith('');
 
     const isPristine =
-      Observable.combineLatest(this.inputFocused, this.textForm.controls[ 'text' ].valueChanges.startWith(''))
+      Observable.combineLatest(this.inputFocused, enteredText)
         .map(([ isFocused, currText ]) => !isFocused && currText == '');
 
-    this.placeholder = isPristine.map(val => val == true ? PRISTINE_PLACEHOLDER : DIRTY_PLACEHOLDER).startWith(PRISTINE_PLACEHOLDER);
+    /* this.showTextLengthHint = Observable.combineLatest(this.inputFocused, enteredText).map(([isFocused, value])=>
+     isFocused && value.length > 0 && ()
+     );*/
+
+    this.showTextLengthHint = enteredText.map(val =>
+      val.length > 0 && (val.length < this.MIN_TEXT_LENGTH || val.length > this.MAX_TEXT_LENGTH)
+    );
+
 
     this.textForm.controls[ 'text' ].valueChanges.subscribe(val => {
       this.option.text = val; // we could do this via the non-reactive FormsModule and ngModel, but this is more testable
     });
+
+
   }
 
   ngOnInit() {

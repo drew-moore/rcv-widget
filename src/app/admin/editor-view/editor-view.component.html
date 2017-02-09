@@ -7,16 +7,17 @@
         <input md-input
                type="text"
                formControlName="prompt"
-               (focus)="promptFocused.next(true)"
-               (blur)="promptFocused.next(false)"
+               (focus)="promptFocused$.next(true)"
+               (blur)="promptFocused$.next(false)"
                class="prompt-input"
                #prompt>
         <md-placeholder>
           <span class="pristine-placeholder">What's the question you're asking?</span>
 
         </md-placeholder>
-        <md-hint class="prompt-hint" align="end" *ngIf="prompt.value.length > 140">
-          {{prompt.value.length - 140}} characters too long
+        <md-hint class="prompt-hint" align="end" *ngIf="showPromptHint | async">
+          {{prompt.value.length > PROMPT_MAX_LENGTH ? prompt.value.length - PROMPT_MAX_LENGTH : PROMPT_MIN_LENGTH -
+          prompt.value.length}} characters too {{prompt.value.length > PROMPT_MAX_LENGTH ? 'long' : 'short'}}
         </md-hint>
       </md-input-container>
 

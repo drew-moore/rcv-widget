@@ -10,11 +10,16 @@
          (blur)="inputFocused.next(false)"
          #text>
   <!--<md-placeholder>{{placeholder | async}}</md-placeholder>-->
-  <md-hint align="end" class="text-length-hint" *ngIf="text.value.length > 50">
-    {{text.value.length - 50}} characters too long
+  <md-hint align="end" class="text-length-hint" *ngIf="showTextLengthHint | async">
+    {{text.value.length > MAX_TEXT_LENGTH ? text.value.length - MAX_TEXT_LENGTH : MIN_TEXT_LENGTH - text.value.length}}
+    characters too {{text.value.length > MAX_TEXT_LENGTH ? 'long' : 'short'}}
   </md-hint>
 </md-input-container>
 
-<button md-icon-button class="remove" (click)="remove.emit()" [style.opacity]="(hovered$ | async) ? 1 : 0">
+<button md-icon-button
+        class="remove"
+        (click)="remove.emit()"
+        [style.opacity]="(hovered$ | async) ? 1 : 0"
+        tabindex="-1">
   <md-icon fontSet="fa" fontIcon="fa-close" class="icon"></md-icon>
 </button>

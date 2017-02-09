@@ -42,9 +42,12 @@ export class EditorViewComponent implements OnInit, AfterViewInit {
   @ViewChild('prompt', { read: MdInputDirective }) promptInput: MdInputDirective;
   @ViewChildren(OptionEditorComponent, { read: OptionEditorComponent }) optionEditors: QueryList<OptionEditorComponent>;
 
+  readonly PROMPT_MIN_LENGTH = 5;
+  readonly PROMPT_MAX_LENGTH = 140;
+
 
   simpleForm = new FormGroup({
-    prompt: new FormControl('', [ Validators.required, Validators.maxLength(140) ])
+    prompt: new FormControl('', [ Validators.required, Validators.maxLength(this.PROMPT_MAX_LENGTH), Validators.minLength(this.PROMPT_MIN_LENGTH) ])
   });
 
   advancedForm = new FormGroup({
@@ -55,7 +58,7 @@ export class EditorViewComponent implements OnInit, AfterViewInit {
     published: new FormControl(true)
   });
 
-  promptFocused: Subject<boolean> = new BehaviorSubject(false);
+  promptFocused$: Subject<boolean> = new BehaviorSubject(false);
   promptPristine: Observable<boolean>;
 
   expDate: any;
@@ -65,12 +68,21 @@ export class EditorViewComponent implements OnInit, AfterViewInit {
   options: PartialPollOption[] = [];
 
 
+  showPromptHint: Observable<boolean>;
+
   constructor() {
 
-    this.promptPristine = Observable.combineLatest(this.promptFocused, this.simpleForm.controls[ 'prompt' ].valueChanges.startWith(''))
+    const promptEntered = this.simpleForm.controls[ 'prompt' ].valueChanges.startWith('');
+
+    this.promptPristine = Observable.combineLatest(this.promptFocused$, promptEntered)
       .map(([ isFocused, currText ]) => !isFocused && currText == '');
 
     for (let i = 0; i < MIN_OPTIONS; i++) {this.addOption()}
+
+    this.showPromptHint = promptEntered.map(currValue =>
+      currValue.length > 0 && (currValue.length < this.PROMPT_MIN_LENGTH || currValue.length > this.PROMPT_MAX_LENGTH)
+    );
+
 
   }
 
@@ -118,6 +130,7 @@ export class EditorViewComponent implements OnInit, AfterViewInit {
     }
     throw `Unsupported: TODO`;
   }
+
 
   isValid(): boolean {
     if (!this.simpleForm.controls[ 'prompt' ].valid) {
