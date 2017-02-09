@@ -7,7 +7,6 @@ $bar-height-small: 20px;
 :host {
   @include flex(column);
   position: relative;
-  background-color: #fafafa;
   /* making the padding = 1em , setting the font size on the 50% label to < 1em and top to 0 means it'll never overlap
      the top line of content */
 
@@ -63,6 +62,7 @@ $bar-height-small: 20px;
     .segment {
       flex: 0 0; //basis set dynamically
       min-width: 0; //prevent winner segment from fitting winner text when it overflows in minimal view
+      transition: 500ms 250ms ease-out all;
       &.winner {
         z-index: 3;
         background-color: md-color($md-blue, 700);

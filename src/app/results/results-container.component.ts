@@ -151,6 +151,7 @@ export class ResultsContainerComponent implements OnInit {
     });
   }
 
+
   reset() {
     this.store.dispatch(new RestartAction());
   }

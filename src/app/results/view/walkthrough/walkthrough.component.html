@@ -117,9 +117,29 @@
             class="next-round-btn"
             (click)="state.currRound < state.rounds.length - 1 ? nextRound.emit() : reset.emit()"
             [class.purple]="state.currRound < state.rounds.length - 1"
-            [class.green]="state.currRound == state.rounds.length - 1">
+            [class.green]="state.currRound == state.rounds.length - 1"
+            [disabled]="isFirstRoundWin()"
+            fxShow="false"
+            fxShow.xs="true"
+    >
       <md-icon *ngIf="state.currRound < state.rounds.length - 1">play_arrow</md-icon>
       <md-icon *ngIf="state.currRound == state.rounds.length - 1">replay</md-icon>
+    </button>
+
+    <button md-fab
+            class="next-round-btn"
+            color="accent"
+            [disabled]="state.currRound == state.rounds.length -1"
+            (click)="nextRound.emit()"
+            fxHide="false"
+            fxHide.xs="true"
+    >
+      <md-icon>play_arrow</md-icon>
+    </button>
+    <button md-mini-fab (click)="reset.emit()" [disabled]="state.currRound == 0" class="purple"
+            fxHide="false"
+            fxHide.xs="true">
+      <md-icon style="transform:rotate(180deg)">replay</md-icon>
     </button>
 
   </div>

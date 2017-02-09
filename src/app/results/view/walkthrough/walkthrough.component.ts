@@ -82,6 +82,10 @@ export class WalkthroughComponent implements OnInit, OnChanges {
     }
   }
 
+  isFirstRoundWin() {
+    return this.state.rounds[ 0 ].outcome != false;
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
 
   }
@@ -177,7 +181,7 @@ export class WalkthroughComponent implements OnInit, OnChanges {
     let toWin = Math.ceil(leaderState.votes.outOf / 2);
     let needs = toWin - leaderState.votes.count;
 
-    return `<strong>${leader.text}</strong> leads with <strong>${leaderPct}%</strong> of active votes, but needs ${needs} more votes to reach 50% and win.`
+    return `<strong>${leader.text}</strong> leads with <strong>${leaderPct}%</strong> of active votes, but no one has over 50% yet.`
 
   }
 

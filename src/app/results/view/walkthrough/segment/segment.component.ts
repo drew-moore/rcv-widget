@@ -37,7 +37,7 @@ export class SegmentComponent implements OnInit {
   ngOnInit() {
     console.log('seg initted');
     this.tooltipText = this.firstChoice ? `${this.option.text} was the first choice on ${this.count} ballots` :
-      `Inherited ${this.count} ${this.count > 1 ? 'votes' : 'vote'} from ${this.option.text} in the ${this.suffixed.transform(this.round)} round.`;
+      `Inherited ${this.count} ${this.count > 1 ? 'votes' : 'vote'} from ${this.option.text}'s supporters`;
   }
 
 
