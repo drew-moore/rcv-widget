@@ -1,0 +1,134 @@
+<div class="title-box">{{poll?.prompt}}</div>
+
+<div class="details">
+  <div class="row link">
+    <div class="key">Link:</div>
+    <div class="val"><a [href]="pollUrl()" target="_blank">{{pollUrl()}}</a></div>
+  </div>
+  <div class="row">
+    <div class="key">Embed:</div>
+    <md-tab-group class="val embed-widget">
+      <md-tab label="Full Screen">
+        <div class="code-wrapper">
+          <div class="code" #fullCode>{{embedLink('full')}}</div>
+          <button md-icon-button class="copy-btn" (click)="copyEmbedCode('full')">
+            <md-icon>content_copy</md-icon>
+          </button>
+        </div>
+      </md-tab>
+      <md-tab label="Half Screen">
+        <div class="code-wrapper">
+          <div class="code" #fullCode>{{embedLink('half')}}</div>
+          <button md-icon-button class="copy-btn" (click)="copyEmbedCode('half')">
+            <md-icon>content_copy</md-icon>
+          </button>
+        </div>
+      </md-tab>
+      <md-tab label="Mini">
+        <div class="code-wrapper">
+          <div class="code" #fullCode>{{embedLink('mini')}}</div>
+          <button md-icon-button class="copy-btn" (click)="copyEmbedCode('mini')">
+            <md-icon>content_copy</md-icon>
+          </button>
+        </div>
+      </md-tab>
+
+    </md-tab-group>
+  </div>
+  <div class="row edit">
+    <button md-raised-button color="primary" (click)="gotoEdit.emit()">Edit Poll</button>
+    <div class="status">
+      <div class="key">Poll Status:</div>
+      <div class="val {{poll.status}}">{{poll.status}}</div>
+      <button md-raised-button class="status-toggle {{poll.status}}" (click)="toggleStatus.emit(poll)">{{poll.status ==
+        'open' ? 'close' : 'open'}}
+      </button>
+    </div>
+  </div>
+</div>
+<div class="votes-cast">
+  <div class="heading">Votes Cast</div>
+
+  <div class="body">
+    <div class="totals">
+      <div class="row">
+        <div class="key">All time:</div>
+        <div class="val">{{votesInTime('all')}}</div>
+      </div>
+      <div class="row">
+        <div class="key">This month:</div>
+        <div class="val">{{votesInTime('month')}}</div>
+      </div>
+
+      <div class="row">
+        <div class="key">This week:</div>
+        <div class="val">{{votesInTime('week')}}</div>
+      </div>
+
+      <div class="row">
+        <div class="key">Today:</div>
+        <div class="val">{{votesInTime('day')}}</div>
+      </div>
+
+    </div>
+    <div class="graph">
+      <div>GRAPH</div>
+    </div>
+  </div>
+</div>
+
+<div class="choice-details">
+  <div class="heading">Choices</div>
+
+  <div class="body">
+    <rcv-choice-table [poll]="poll" [votes]="votes"></rcv-choice-table>
+  </div>
+
+
+</div>
+
+
+<!--<div class="poll-content">
+
+  <div class="section prompt">
+
+    <div *ngIf="!editing.prompt" class="prompt-display body">{{poll.prompt}}</div>
+    <md-input-container class="prompt-input body"  *ngIf="editing.prompt">
+      <input md-input type="text" [(ngModel)]="poll.prompt" autofocus>
+    </md-input-container>
+    <button md-icon-button class="toggle" (click)="editPrompt()">
+      <md-icon *ngIf="!editing.prompt" class="edit-toggle">edit</md-icon>
+      <md-icon *ngIf="editing.prompt" class="accept">check</md-icon>
+    </button>
+  </div>
+
+  <div class="options">
+
+    <div *ngFor="let opt of poll.options" class="option-row">
+      <div class="color-swatch" [style.background-color]="opt?.color"></div>
+      <div class="text-display" *ngIf="!editing[opt.id]?.text">{{opt?.text}}</div>
+      <md-input-container class="text-input body"  *ngIf="editing.prompt">
+        <input md-input type="text" [(ngModel)]="poll.prompt" autofocus>
+      </md-input-container>
+    </div>
+
+  </div>
+
+
+</div>-->
+<!--
+
+<rcv-create [poll]="poll" class="poll-content"></rcv-create>
+
+<div class="share-activity">
+
+  <div class="share">
+    share
+  </div>
+
+  <div class="activity">
+    activity
+  </div>
+
+</div>
+-->

@@ -4,6 +4,7 @@ import {WebsiteRootComponent} from "./website-root.component";
 import {SplashComponent} from "./splash/splash.component";
 import {CreateContainerComponent} from "../admin/create-container.component";
 import {AdminContainerComponent} from "../admin/admin-container.component";
+import {EditContainerComponent} from "../admin/edit-container.component";
 
 export const WEBSITE_ROUTES: Routes = [
   {
@@ -13,6 +14,10 @@ export const WEBSITE_ROUTES: Routes = [
       {
         path: 'poll/:pollId/admin',
         component: AdminContainerComponent
+      },
+      {
+        path: 'poll/:pollId/edit',
+        component: EditContainerComponent
       },
       {
         path: 'poll',

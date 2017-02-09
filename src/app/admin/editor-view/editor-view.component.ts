@@ -123,12 +123,18 @@ export class EditorViewComponent implements OnInit, AfterViewInit {
     if (!this.simpleForm.controls[ 'prompt' ].valid) {
       return false;
     }
+
+    if (!this.optionEditors) {
+      return false;
+    }
+
     let editors = this.optionEditors.toArray();
     for (let i = 0; i < editors.length; i++) {
       if (!editors[ i ].isValid()) {
         return false;
       }
     }
+
     return true;
   }
 

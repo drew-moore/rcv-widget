@@ -1,0 +1,17 @@
+<table class="table table-striped table-responsive">
+  <thead>
+  <tr>
+    <th colspan="2" rowspan="2">Option</th>
+    <th [attr.colspan]="columns.length" style="text-align: center">Choice</th>
+  </tr>
+  <tr>
+    <th *ngFor="let col of columns">{{(col + 1) | suffixed}}</th>
+  </tr>
+  </thead>
+  <tbody>
+  <tr *ngFor="let row of rows">
+    <td colspan="2">{{row.text}}</td>
+    <td *ngFor="let col of tdata[row.id]">{{col}}</td>
+  </tr>
+  </tbody>
+</table>
