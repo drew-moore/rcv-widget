@@ -122,7 +122,7 @@ export function computeRounds(pollOptions: PollOption[], votes: Vote[], removed:
 function checkForOutcome(dist: VoteDistribution): PollOutcome|false {
   let numActiveVotes = getActiveVotes(dist).length,
     needed = Math.ceil(numActiveVotes / 2);
-  let idsByScore = keys(dist).sort((x, y) => dist[ y ].length - dist[ x ].length);
+  let idsByScore = keys(dist).filter(x => x !== EXHAUSTED).sort((x, y) => dist[ y ].length - dist[ x ].length);
   let hiScore = dist[ idsByScore[ 0 ] ].length;
 
   if (hiScore >= needed) {
