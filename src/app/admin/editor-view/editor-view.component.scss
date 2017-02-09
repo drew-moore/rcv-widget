@@ -1,0 +1,246 @@
+@import "../../../assets/style/all";
+
+$bottom-bar-height-gt-sm: 90px;
+$bottom-bar-height-lt-md: 65px;
+
+:host, .host-container, .outer-wrapper {
+  display: block;
+  height: 100%;
+  position: relative;
+}
+
+.outer-wrapper {
+  @include flex(column);
+
+  .simple-form {
+    flex: 1 1;
+    @include flex(column);
+
+    @include mq-lt-md {
+      flex-basis: calc(100% - #{$bottom-bar-height-lt-md});
+      padding: 10px 5px 5px;
+    }
+
+    @include mq-gt-sm {
+      flex-basis: calc(100% - #{$bottom-bar-height-gt-sm});
+      padding: 20px;
+    }
+
+    @include mq-lg-xl {
+      align-self: center;
+      width: 1200px;
+      padding: 20px;
+    }
+
+  }
+
+  .control-bar {
+    @include flex($justify: space-between, $align: center);
+    border-top: 2px solid md-color($md-grey, 400);
+    background-color: md-color($md-grey, 300);
+    flex: 1 0;
+
+    @include mq-lt-md {
+      flex-basis: $bottom-bar-height-lt-md;
+      padding: 0 5px;
+    }
+
+    @include mq-gt-sm {
+      flex-basis: $bottom-bar-height-gt-sm;
+      padding: 0 5%;
+    }
+
+    .submit-btn {
+      text-transform: uppercase;
+
+      &:not([disabled]) {
+        background-color: $fairvote-purple;
+        color: white;
+      }
+
+    }
+
+    .placeholder-right {
+      width: 40px;
+    }
+
+  }
+
+}
+
+.prompt-input-container {
+  font-size: 1.3em;
+  margin-bottom: 15px;
+}
+
+.prompt-input {
+  font-size: 1.3em;
+}
+
+.prompt-input-placeholder {
+  //font-size:
+}
+
+.options-wrapper {
+  background-color: md-color($md-grey, 300);
+  border-radius: 4px;
+  @include flex(column);
+
+  & > * {
+    margin-bottom: 20px;
+
+    @include mq-lg-xl {
+      margin-bottom: 30px;
+    }
+
+  }
+
+  @include mq-lt-md {
+    margin: 10px 5px;
+    padding: 0 5px;
+  }
+
+  @include mq-gt-sm {
+    margin: 10px 15px;
+    padding: 0 15px;
+  }
+
+  .heading {
+    font-size: 1.25em;
+    font-weight: 300;
+    border-bottom: 1px solid md-color($md-grey, 200);
+    padding: 10px 0;
+    text-align: center;
+
+    .subheading {
+      font-size: 0.75em;
+    }
+  }
+
+  .add-option-btn {
+    align-self: center;
+  }
+
+}
+
+.pristine-placeholder {
+  @extend .work-sans; // because material changes it to roboto
+  color: $app-foreground; //because material changes it to translucent
+}
+
+.advanced-options-menu {
+  max-width: 75%;
+
+  @include mq-lt-md {
+    padding: 5px;
+  }
+
+  @include mq-gt-sm {
+    padding: 10px;
+  }
+
+  .section {
+    margin-bottom: 15px;
+
+    .heading {
+      font-size: 1.25em;
+      font-weight: 500;
+      padding-bottom: 2px;
+      margin-bottom: 2px;
+      border-bottom: 1px solid md-color($md-grey, 600);
+    }
+
+    .subheading {
+      text-align: center;
+      padding-bottom: 4px;
+    }
+
+    .body {
+      padding: 0 2%;
+    }
+
+    &.security {
+
+      .security-options {
+        @include flex;
+        flex-wrap: wrap;
+
+        .option {
+          flex: 1 1 150px;
+          margin: 5px 2px;
+          border-top: 8px solid;
+          padding: 2px;
+          position: relative;
+          min-width: 150px;
+
+          &.green {
+            border-top-color: md-color($md-green, 600);
+          }
+
+          &.orange {
+            border-top-color: md-color($md-orange, 600);
+          }
+
+          &.yellow {
+            border-top-color: md-color($md-yellow, 600);
+          }
+
+          &.red {
+            border-top-color: md-color($md-red, 600);
+          }
+
+          .divider {
+            margin: -4px 20px 5px 20px;
+            border-bottom: 1px solid md-color($md-grey, 600);
+          }
+
+          .heading {
+            font-weight: 400;
+          }
+
+          .blurb {
+            padding: 0 10px;
+          }
+
+        }
+
+      }
+
+    }
+
+  }
+
+}
+
+.option-row {
+  @include flex($align: center);
+  & > *:not(:first-child) {
+    margin-left: 20px;
+  }
+}
+
+.slide-toggle-row {
+  @include flex($align: center);
+
+  .yes, .no {
+    opacity: 0;
+    transition: 150ms linear opacity;
+    text-transform: uppercase;
+    font-weight: 400;
+    margin: 0 5px;
+
+    &.visible {
+      opacity: 1;
+    }
+
+  }
+
+}
+
+.expiration-date-row {
+  text-align: center;
+}
+
+.prompt-hint {
+  color: md-color($md-red, 600);
+}

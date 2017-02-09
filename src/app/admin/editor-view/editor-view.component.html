@@ -1,0 +1,109 @@
+<md-sidenav-container class="host-container">
+  <div class="outer-wrapper">
+
+    <div class="simple-form" [formGroup]="simpleForm">
+
+      <md-input-container class="prompt-input-container">
+        <input md-input
+               type="text"
+               formControlName="prompt"
+               (focus)="promptFocused.next(true)"
+               (blur)="promptFocused.next(false)"
+               class="prompt-input"
+               #prompt>
+        <md-placeholder>
+          <span class="pristine-placeholder">What's the question you're asking?</span>
+
+        </md-placeholder>
+        <md-hint class="prompt-hint" align="end" *ngIf="prompt.value.length > 140">
+          {{prompt.value.length - 140}} characters too long
+        </md-hint>
+      </md-input-container>
+
+      <div class="options-wrapper">
+        <div class="heading">What are the possible answers?</div>
+        <rcv-option-editor *ngFor="let option of options; let i = index"
+                           [option]="option"
+                           (remove)="removeOption(i)"></rcv-option-editor>
+        <button md-raised-button class="add-option-btn" (click)="addOption()">ADD ANOTHER</button>
+      </div>
+    </div>
+
+
+    <div class="control-bar">
+      <button md-icon-button (click)="advOptions.opened ? advOptions.close() : advOptions.open()">
+        <md-icon>menu</md-icon>
+      </button>
+      <button md-raised-button class="submit-btn" (click)="doSubmit()" [disabled]="!isValid()">
+        {{editingExistentPoll ? 'save changes' : 'create my poll'}}
+      </button>
+      <div class="placeholder-right"></div>
+    </div>
+
+
+  </div>
+  <md-sidenav #advOptions class="advanced-options-menu" [formGroup]="advancedForm">
+    <div class="section security">
+      <div class="heading">Security</div>
+      <md-radio-group class="body security-options" formControlName="security">
+        <div class="option red" color="primary">
+          <md-radio-button value="anonymous" color="primary" class="heading">Anonymous</md-radio-button>
+          <div class="blurb">No authentication is required to vote in your poll. This makes things quick and easy, but
+            there's nothing preventing (or even discouraging) anyone from voting more than once.
+          </div>
+        </div>
+        <div class="option yellow">
+          <md-radio-button value="unverified" color="primary" class="heading">Unverified</md-radio-button>
+          <div class="blurb">Users must create an RCVApp account to vote in your poll, but they aren't required to
+            verify it. This discourages people from voting multiple times by requiring them to create a new account each
+            time.
+          </div>
+        </div>
+        <div class="option green">
+          <md-radio-button value="verified" color="primary" class="heading">Verified</md-radio-button>
+          <div class="blurb">Users must create an RCVApp account <em>and</em> verify their email address to vote in your
+            poll: This doesn't guarantee against ballot stuffing, but further discourages it by requiring a valid email
+            address for each vote.
+          </div>
+        </div>
+      </md-radio-group>
+    </div>
+
+    <div class="section duration">
+      <div class="heading">Duration</div>
+      <div class="body option-row">
+        <div>Should your poll be automatically closed at a certain time?</div>
+        <div class="slide-toggle-row">
+          <div class="no" [class.visible]="!exptoggle.checked">no</div>
+          <md-slide-toggle formControlName="expires" color="primary" #exptoggle></md-slide-toggle>
+          <div class="yes" [class.visible]="exptoggle.checked">yes</div>
+        </div>
+      </div>
+      <div *ngIf="exptoggle.checked" class="expiration-date-row" [@slideDown]>
+        <span>Close my poll on </span>
+        <input type="date" formcontrolname="expirationDate">
+        <span> at </span>
+        <input type="time" formcontrolname="expirationTime">
+      </div>
+
+    </div>
+
+    <div class="section duration">
+      <div class="heading">Visibility</div>
+      <div class="body option-row">
+        <div>Would you like this poll to be publicly visible on the RCVApp homepage?</div>
+        <div class="slide-toggle-row">
+          <div class="no" [class.visible]="!pubtoggle.checked">no</div>
+          <md-slide-toggle formControlName="published" color="primary" #pubtoggle></md-slide-toggle>
+          <div class="yes" [class.visible]="pubtoggle.checked">yes</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px">
+      <button md-raised-button (click)="advOptions.close()" color="primary">Dismiss</button>
+    </div>
+
+  </md-sidenav>
+
+</md-sidenav-container>

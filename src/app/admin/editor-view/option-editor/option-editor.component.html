@@ -1,0 +1,20 @@
+<div class="image">
+  <div *ngIf="!option.image" class="color-swatch" [ngStyle]="{'background-color':option.color}"></div>
+</div>
+
+<md-input-container class="text-input" [formGroup]="textForm">
+  <input md-input
+         type="text"
+         formControlName="text"
+         (focus)="inputFocused.next(true)"
+         (blur)="inputFocused.next(false)"
+         #text>
+  <!--<md-placeholder>{{placeholder | async}}</md-placeholder>-->
+  <md-hint align="end" class="text-length-hint" *ngIf="text.value.length > 50">
+    {{text.value.length - 50}} characters too long
+  </md-hint>
+</md-input-container>
+
+<button md-icon-button class="remove" (click)="remove.emit()" [style.opacity]="(hovered$ | async) ? 1 : 0">
+  <md-icon fontSet="fa" fontIcon="fa-close" class="icon"></md-icon>
+</button>

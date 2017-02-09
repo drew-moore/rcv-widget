@@ -6,13 +6,16 @@ import {WidgetModule} from "../widget/widget.module";
 import {SplashComponent} from "./splash/splash.component";
 import {AuthComponentsModule} from "../auth/auth-components.module";
 import {IsWebsite} from "../index";
+import {AdminModule} from "../admin/admin.module";
 
 @NgModule({
   imports: [
-    WebsiteRoutingModule,
     SharedModule,
+    WebsiteRoutingModule,
+
+    AuthComponentsModule,
     WidgetModule,
-    AuthComponentsModule
+    AdminModule
   ],
   declarations: [ WebsiteRootComponent, SplashComponent ],
   providers: [

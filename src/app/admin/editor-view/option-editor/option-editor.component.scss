@@ -1,0 +1,34 @@
+@import "../../../../assets/style/all";
+
+:host {
+  @include flex($justify: space-between, $align: center);
+
+  & > * {
+    margin: 0 10px;
+  }
+
+}
+
+.color-swatch {
+  height: 1em;
+  width: 1em;
+  border-radius: 50%;
+}
+
+.image {
+  flex: 0 0 calc(1em + 5px);
+}
+
+.text-input {
+  flex: 1 1;
+  @extend .work-sans;
+}
+
+.remove {
+  color: md-color($rcv-app-warn, 600);
+  transition: 150ms linear opacity;
+}
+
+.text-length-hint {
+  color: md-color($md-red, 600);
+}
