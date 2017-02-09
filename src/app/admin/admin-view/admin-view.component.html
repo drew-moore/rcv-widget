@@ -32,6 +32,30 @@
           </button>
         </div>
       </md-tab>
+      <md-tab label="Custom">
+        <div class="custom-dimensions-wrapper">
+          <div>
+            <label for="width">Width</label>
+            <md-input-container>
+              <input md-input type="number" id="width" [(ngModel)]="customEmbedDims.width">
+              <div md-suffix>px</div>
+            </md-input-container>
+          </div>
+          <div>
+            <label for="height">Height</label>
+            <md-input-container>
+              <input md-input type="number" id="height" [(ngModel)]="customEmbedDims.height">
+              <div md-suffix>px</div>
+            </md-input-container>
+          </div>
+        </div>
+        <div class="code-wrapper">
+          <div class="code" #fullCode>{{embedLink('custom')}}</div>
+          <button md-icon-button class="copy-btn" (click)="copyEmbedCode('custom')">
+            <md-icon>content_copy</md-icon>
+          </button>
+        </div>
+      </md-tab>
 
     </md-tab-group>
   </div>

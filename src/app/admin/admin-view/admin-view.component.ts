@@ -42,7 +42,10 @@ export class AdminViewComponent implements OnInit {
   @ViewChild('halfCode') private halfCodeEl: ElementRef;
   @ViewChild('miniCode') private miniCodeEl: ElementRef;
 
-  twitterButton: any;
+  customEmbedDims = {
+    width: 800,
+    height: 600
+  };
 
 
   editing = {
@@ -72,12 +75,32 @@ export class AdminViewComponent implements OnInit {
     }
   }
 
-  embedLink(size: 'full'|'half'|'mini'): string|undefined {
+  embedLink(size: 'full'|'half'|'mini'|'custom'): string|undefined {
     if (this.poll) {
-      let width = size == 'full' ? '96vw' : size == 'half' ? '50vw' : '400px';
-      let height = size == 'full' ? '96vw' : size == 'half' ? '50vw' : '300px';
+      let width: string, height: string;
+      switch (size) {
+        case 'full':
+          width = '96vw';
+          height = '48vw';
+          break;
+        case 'half':
+          width = '50vw';
+          height = '25vw';
+          break;
+        case 'mini':
+          width = '450px';
+          height = '300px';
+          break;
+        case 'custom':
+          width = `${this.customEmbedDims.width}px`;
+          height = `${this.customEmbedDims.height}px`;
+          break;
+        default:
+          throw `invalid embed size option given: ${size}`;
+      }
       return `<iframe src="https://rcv-app.firebaseapp.com/embed/${this.poll.id}" style="width:${width}; height:${height}"></iframe>`
     }
+
   }
 
   votesInTime(time: 'all'|'month'|'week'|'day'): number {

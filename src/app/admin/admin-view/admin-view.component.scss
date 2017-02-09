@@ -155,3 +155,7 @@
 
   }
 }
+
+.custom-dimensions-wrapper {
+  @include flex($justify: space-around);
+}
