@@ -5,15 +5,6 @@
   position: relative;
   margin: 10px 5px;
 
-  @include mq-lt-md {
-    padding: 5px;
-    flex: 1 1 calc(2em + 4px);
-  }
-
-  @include mq-gt-sm {
-    flex: 1 1 60px;
-  }
-
   .rect {
     transform-origin: 0;
     transition: 250ms ease-out width;
@@ -143,6 +134,9 @@
     flex-wrap: wrap;
   }
 
+  .winner-check {
+    color: md-color($md-green, 600);
+  }
 }
 
 .stats {
@@ -155,6 +149,10 @@
 .eliminated {
   font-weight: 300;
   text-transform: uppercase;
+}
+
+.deltas {
+  @include flex($align: center);
 }
 
 .delta {
@@ -182,3 +180,4 @@
 .unremove-btn {
   margin-left: 10px;
 }
+

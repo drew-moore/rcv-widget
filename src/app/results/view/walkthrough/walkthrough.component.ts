@@ -151,6 +151,10 @@ export class WalkthroughComponent implements OnInit, OnChanges {
     }
   }
 
+  isWinner(id: string) {
+    return !!this.currState().outcome && this.getLeaders().indexOf(id) >= 0;
+  }
+
   barHovered(barId: string, value: boolean) {
     this.barHover.emit({ barId, value })
   }
@@ -187,48 +191,52 @@ export class WalkthroughComponent implements OnInit, OnChanges {
     })
   }
 
+  getLeaders(): string[] {
+    let currState = this.currState();
+    let idsByScoreDesc = keys(currState.options).sort((x, y) => currState.options[ y ].votes.count - currState.options[ x ].votes.count);
+    let leaderScore = currState.options[ idsByScoreDesc[ 0 ] ].votes.count;
+    let toReturn: string[] = [];
+    for (let i = 0; currState.options[ idsByScoreDesc[ i ] ].votes.count == leaderScore; i++) {
+      toReturn.push(idsByScoreDesc[ i ]);
+    }
+    return toReturn
+  };
+
+  getLosers(): string[] {
+    let currState = this.currState();
+    let idsByScoreAsc = keys(currState.options).sort((x, y) => currState.options[ x ].votes.count - currState.options[ y ].votes.count);
+    let lowScore = currState.options[ idsByScoreAsc[ 0 ] ].votes.count;
+    let toReturn: string[] = [];
+    for (let i = 0; currState.options[ idsByScoreAsc[ i ] ].votes.count == lowScore; i++) {
+      toReturn.push(idsByScoreAsc[ i ]);
+    }
+    return toReturn
+  }
+
 
   leaderText() {
     let currState = this.currState();
-    let leaderId = keys(currState.options).sort((x, y) => currState.options[ y ].votes.count - currState.options[ x ].votes.count)[ 0 ];
-    let leader = this.optionMap[ leaderId ];
-    let leaderState = currState.options[ leaderId ];
-    let leaderPct = Math.round((leaderState.votes.count / leaderState.votes.outOf) * 1000) / 10;
-    let toWin = Math.ceil(leaderState.votes.outOf / 2);
-    let needs = toWin - leaderState.votes.count;
+    let leaders = this.getLeaders();
+    let leaderCount = currState.options[ leaders[ 0 ] ].votes.count;
+    let leaderPct = Math.round((leaderCount / currState.options[ leaders[ 0 ] ].votes.outOf) * 1000) / 10;
 
-    return `<strong>${leader.text}</strong> leads with <strong>${leaderPct}%</strong> of active votes, but no one has over 50% yet.`
-
+    if (leaders.length > 1) {
+      let names = nameString(leaders.map(id => this.optionMap[ id ].text));
+      return `${names} are tied for the lead with <strong>${leaderPct}</strong>% of active votes, but no option has over 50% yet.`
+    } else {
+      return `<strong>${this.optionMap[ leaders[ 0 ] ].text}</strong> leads with <strong>${leaderPct}%</strong> of active votes, but no one has over 50% yet.`
+    }
   }
 
   loserText() {
-    let currState = this.currState();
-    if (currState.outcome) {
 
+    let losers = this.getLosers();
+
+    if (losers.length > 1) {
+      let names = nameString(losers.map(id => this.optionMap[ id ].text));
+      return `${names} are tied with the fewest votes, so one of them will be selected at random to be eliminated next.`
     } else {
-      let text: string;
-      let idsByScore = keys(currState.options)
-        .filter(key => currState.options[ key ].status == 'active')
-        .sort((x, y) => (currState.options[ x ].votes.count - currState.options[ y ].votes.count));
-
-      let lowScore = currState.options[ idsByScore[ 0 ] ].votes.count;
-
-      let losers = idsByScore.filter(id => currState.options[ id ].votes.count == lowScore);
-
-      if (losers.length > 1) {
-        let names = '';
-        losers.forEach((id, idx) => {
-          if (idx > 0 && idx < losers.length - 1) {
-            names += ', ';
-          } else if (idx == losers.length - 1) {
-            names += ' and '
-          }
-          names += this.optionMap[ id ].text;
-        });
-        return `${names} are tied with the fewest votes, so one of them will be selected at random to be eliminated next.`
-      } else {
-        return `${this.optionMap[ losers[ 0 ] ].text}  has the fewest votes of any remaining option, and will be eliminated next.`
-      }
+      return `<strong>${this.optionMap[ losers[ 0 ] ].text}</strong> has the fewest votes of any remaining option, and will be eliminated next.`
     }
   }
 
@@ -262,6 +270,19 @@ export class WalkthroughComponent implements OnInit, OnChanges {
   }
 
 
+}
+
+function nameString(names: string[]): string {
+  let toret = '';
+  for (let idx = 0; idx < names.length; idx++) {
+    if (idx > 0 && idx < names.length - 1) {
+      toret += ', ';
+    } else if (idx == names.length - 1) {
+      toret += ' and ';
+    }
+    toret += `<strong>${names[ idx ]}</strong>`;
+  }
+  return toret;
 }
 
 export type BarViewModel = {

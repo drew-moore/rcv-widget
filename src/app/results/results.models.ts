@@ -46,6 +46,7 @@ export interface OptionStateSnapshot {
     count: number;
     outOf: number;
   }
+  outcome: null|'won'|'lost';
   votesIn?: InboundVoteTransfer;
   votesOut?: OutboundVoteTransfer[];
 }

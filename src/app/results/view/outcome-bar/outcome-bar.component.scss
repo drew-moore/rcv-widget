@@ -22,7 +22,7 @@ $bar-height-small: 20px;
 
   .fifty-pct-line {
     position: absolute;
-    border-left: 1px dashed rgba(0, 0, 0, 0.5);
+    border-left: 1px dashed rgba(0, 0, 0, 0.25);
     left: calc(50% + 1px);
     top: 0;
     bottom: 0;
@@ -34,13 +34,12 @@ $bar-height-small: 20px;
   .winner-details, .runner-up-details {
     flex: 0 0 auto;
     padding: 2px 15px;
+    z-index: 2;
 
     @include mq-lt-md {
       padding: 2px 0;
     }
 
-    background-color: $app-background-opacity-50;
-    z-index: 2;
   }
 
   .winner-details {
@@ -73,7 +72,7 @@ $bar-height-small: 20px;
 
       &.runner-up {
         z-index: 2;
-        background-color: md-color($md-grey, 700);
+        background-color: md-color($md-grey, 800);
         border-left: 1px solid md-color($md-grey, 100);
         transform-origin: 100%;
       }

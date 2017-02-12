@@ -143,6 +143,21 @@
 
     .bar-wrapper {
       margin: 10px 0;
+      flex: 1 1;
+      @include flex;
+
+      rcv-bar {
+        flex: 1 1 100%;
+      }
+
+      .winner-check {
+        flex: 0 0 auto;
+        align-self: center;
+        margin-left: 10px;
+        color: md-color($md-green, 600);
+      }
+
+
     }
 
   }

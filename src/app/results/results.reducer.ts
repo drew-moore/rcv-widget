@@ -174,7 +174,7 @@ export function results(state: ResultsState, action: Action): ResultsState {
       return Object.assign({}, state, { newVotesPending: true });
 
     case ResultsActions.NEW_VOTES_DISMISSED:
-      return Object.assign({}, state, { newVotesPending: true });
+      return Object.assign({}, state, { newVotesPending: false });
 
 
     default:

@@ -54,11 +54,11 @@ import {Subject, BehaviorSubject, Observable} from "rxjs";
     ]),
     trigger('delta', [
       transition(`void => up`, [
-        style({ opacity: '0', transform: 'translateY(20px)' }),
-        animate('150ms 150ms ease-out', style({ opacity: 1, transform: 'translateY(0)' }))
+        style({ opacity: '0', transform: 'translateY(20px)', width: 0 }),
+        animate('150ms 200ms ease-out', style({ opacity: 1, transform: 'translateY(0)', width: '*' }))
       ]),
       transition('up => void', [
-        animate('150ms ease-out', style({ opacity: 0, transform: 'translateY(-20px)' }))
+        animate('150ms ease-out', style({ opacity: 0, transform: 'translateY(-20px)', width: 0 }))
       ]),
       transition(`void => out`, [
         style({ opacity: '0', transform: 'translateX(-20px)', width: 0 }),
@@ -157,24 +157,6 @@ export class BarComponent implements OnInit {
 
   get showBar() {
     return !(this.state.status == 'eliminated' || this.state.status == 'removed');
-  }
-
-  get visibleSegments(): InboundVoteTransfer[] {
-    if (this.isHovered) {
-      return this.rounds
-        .slice(0, this.currRound + 1)
-        .filter(round => !!round.votesIn)
-        .map(round => round.votesIn) as InboundVoteTransfer[];
-    } else {
-      if (!!this.hoverState.segment) {
-        return this.rounds
-          .slice(0, this.currRound + 1)
-          .filter(round => !!round.votesIn && round.votesIn.source.id == this.hoverState.segment)
-          .map(round => round.votesIn) as InboundVoteTransfer[];
-      } else {
-        return [];
-      }
-    }
   }
 
   emitSegmentHover(segment: string, value: boolean) {

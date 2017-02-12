@@ -13,8 +13,7 @@ import {
   RemoveOptionAction,
   UnremoveOptionAction,
   RestartAction,
-  NewVotesReceivedAction,
-  NewVotesDismissedAction
+  NewVotesReceivedAction
 } from "./results.reducer";
 import {ResultsState} from "./results.models";
 import {PollService} from "../core/poll/poll.service";
@@ -23,13 +22,13 @@ import {VoteService} from "../core/vote/vote.service";
 @Component({
   selector: 'rcv-results-container',
   template: `
-    <div class="outcome-bar-wrapper" [class.small]="showWalkthrough">
-        <div class="inner" *ngIf="!!(poll$ | async) && !!(state$ | async)" >
+    <div class="outcome-bar-wrapper" [class.small]="showWalkthrough" *ngIf="(isReady$ | async) && (hasVotes$ | async)" >
+        <div class="inner" >
           <rcv-outcome-bar [poll]="poll$ | async" [outcome]="(state$ | async).outcome" [minimize]="showWalkthrough"></rcv-outcome-bar>
           <button md-raised-button (click)="toggleWalkthrough()" *ngIf="!showWalkthrough" class="show-details-btn" [@showDetailsBtn]>show details</button>
         </div>
     </div>
-    <rcv-walkthrough *ngIf="showWalkthrough && (!!(poll$ | async) && !!(state$ | async))" [@walkthrough]
+    <rcv-walkthrough *ngIf="showWalkthrough && (isReady$ | async) && (hasVotes$ | async)" [@walkthrough]
       class="walkthrough-wrapper"
       [poll]="poll$ | async" 
       [state]="state$ | async" 
@@ -43,6 +42,7 @@ import {VoteService} from "../core/vote/vote.service";
       (unremove)="unremoveOption($event)"
       (showUpdate)="showUpdate$.next()"
     ></rcv-walkthrough>
+    <div *ngIf="(isReady$ | async) && !(hasVotes$ | async)" class="no-votes-message">We don't </div>
   `,
   styleUrls: [ './results-container.component.scss' ],
   animations: [
@@ -77,6 +77,11 @@ export class ResultsContainerComponent implements OnInit {
 
   initialized: boolean = false;
 
+  isReady$: Observable<boolean>;
+
+  hasVotes$: Observable<boolean>;
+
+
   constructor(private pollSvc: PollService, private voteSvc: VoteService, private store: Store<AppState>) {
 
     this.state$ = store.select(getResultsState);
@@ -85,22 +90,28 @@ export class ResultsContainerComponent implements OnInit {
     this.poll$ = this.pollSvc.activePoll$;
 
 
+    const votes$ = this.voteSvc.activePollVotes$;
+
+    const nonemptyVotes$ = votes$.filter(votes => votes.length > 0);
+
     /**
      * begin snippet: async vote updates
      * */
-    const votes$ = this.voteSvc.activePollVotes$;
-    const initialVotes$ = votes$.take(1);
-    const voteUpdate$ = votes$.skip(1);
+
+      //the first load of votes we get (which we want to show immediately)
+    const initialVotes$ = nonemptyVotes$.take(1);
+
+    //any subsequent loads (which we want to show when the user clicks update)
+    const voteUpdate$ = nonemptyVotes$.skip(1);
+
+    //stream of user update clicks
     const showUpdate$ = this.showUpdate$.skip(1); //just skipping the initial null emission
 
-    voteUpdate$.subscribe(() => {
-      this.store.dispatch(new NewVotesReceivedAction());
-    });
+    //when a new load of votes comes in, dispatch action that show alert
+    voteUpdate$.subscribe(() => this.store.dispatch(new NewVotesReceivedAction()));
 
-    showUpdate$.subscribe(() => {
-      this.store.dispatch(new NewVotesDismissedAction());
-    });
 
+    //in addition to hiding the alert, push the new vote data down
     let acceptedUpdates$ = showUpdate$.withLatestFrom(votes$).map(([ nothing, votes ]) => votes);
 
     this.votes$ = Observable.merge(initialVotes$, acceptedUpdates$);
@@ -109,7 +120,9 @@ export class ResultsContainerComponent implements OnInit {
      * end snippet: async code updates
      */
 
+    this.isReady$ = Observable.combineLatest(this.poll$, this.state$, (poll, state) => !!poll && !!state).startWith(false);
 
+    this.hasVotes$ = this.votes$.map(votes => votes.length > 0).startWith(false);
 
     this.data$ = Observable.combineLatest(this.poll$, this.votes$).map(([ poll, votes ]) => ({ poll, votes })).share();
 

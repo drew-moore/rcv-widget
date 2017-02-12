@@ -35,7 +35,7 @@ export function computeRounds(pollOptions: PollOption[], votes: Vote[], removed:
   let totalTransfersOut: number = 0;
 
   let outcome: PollOutcome|false;
-
+  let winners: string[] = [];
 
   let options: { [id: string]: OptionStateSnapshot };
 
@@ -46,6 +46,9 @@ export function computeRounds(pollOptions: PollOption[], votes: Vote[], removed:
     activeVotes = getActiveVotes(currDistribution);
     inactiveVotes = currDistribution[ EXHAUSTED ];
     outcome = checkForOutcome(currDistribution);
+    if (!!outcome) {
+      winners = outcome.places.filter(entry => entry.place == 1).map(entry => entry.id);
+    }
 
     if (round > 0) {
       transfers = keys(currDistribution)
@@ -72,7 +75,12 @@ export function computeRounds(pollOptions: PollOption[], votes: Vote[], removed:
           outOf: activeVotes.length
         } : { count: 0, outOf: activeVotes.length };
 
-      let toPut: OptionStateSnapshot = { status, votes };
+
+      let toPut: OptionStateSnapshot = {
+        status,
+        votes,
+        outcome: !!outcome ? winners.indexOf(option.id) >= 0 ? 'won' : 'lost' : null
+      };
 
       if (round > 0 && status == 'active') {
         if (transfers[ option.id ] > 0) {

@@ -78,18 +78,19 @@
       </div>
     </div>
 
-    <rcv-bar *ngFor="let entry of options; trackBy:barId"
-             [currRound]="state.currRound"
-             [option]="entry.option"
-             [rounds]="entry.rounds"
-             [scale]="barScale()"
-             [hoverState]="state.hovered"
-             (barHovered)="barHovered(entry.option.id, $event)"
-             (segmentHovered)="segmentHovered(entry.option.id, $event)"
-             (unremove)="unremoveOption(entry.option.id)"
-             class="bar-wrapper"
-    ></rcv-bar>
 
+    <rcv-bar
+      *ngFor="let entry of options; trackBy:barId" class="bar-wrapper"
+      [currRound]="state.currRound"
+      [option]="entry.option"
+      [rounds]="entry.rounds"
+      [scale]="barScale()"
+      [hoverState]="state.hovered"
+      (barHovered)="barHovered(entry.option.id, $event)"
+      (segmentHovered)="segmentHovered(entry.option.id, $event)"
+      (unremove)="unremoveOption(entry.option.id)"
+
+    ></rcv-bar>
 
   </div>
   <md-sidenav #menu class="options-menu">

@@ -2,7 +2,8 @@
      [style.width.%]="barWidth"
      *ngIf="showBar"
      [@bar]="initialized ? 'initialized' : 'uninitialized'"
-     (@bar.done)="setInitialized()"></div>
+     (@bar.done)="setInitialized()">
+</div>
 
 <div class="segment-wrapper" *ngIf="initialized && isHovered && showBar && currRound > 0" [@segments]>
   <!--  <div *ngFor="let delta of visibleSegments"
@@ -52,13 +53,19 @@
       </div>
       <div class="vote-count"
            fxHide="false"
-           fxHide.xs="true"><span class="value">{{state.votes.count}}</span><span class="key">votes</span></div>
-      <div class="delta"
-           *ngFor="let delta of visibleDeltas"
-           [@delta]="isHovered ? 'out' : 'up'"
-           [style.color]="delta.source.color">
-        <div class="count">+{{delta.count}}</div>
+           fxHide.xs="true"><span class="value">{{state.votes.count}}</span><span class="key">votes</span>
       </div>
+      <div class="deltas" *ngIf="!state.outcome">
+        <div class="delta"
+             *ngFor="let delta of visibleDeltas"
+             [@delta]="isHovered ? 'out' : 'up'"
+             [style.color]="delta.source.color">
+          <div class="count">+{{delta.count}}</div>
+        </div>
+      </div>
+      <md-icon *ngIf="state.outcome == 'won'" class="winner-check" [@delta]="'up'">
+        check_circle
+      </md-icon>
     </div>
     <div *ngSwitchCase="'last-eliminated'" class="last-eliminated">
       <span [style.color]="option.color" class="count">-{{totalVotesOut}}</span>
@@ -71,5 +78,4 @@
       <span class="note">removed by user </span> <a (click)="unremove.emit()" class="linklike">undo</a>
     </div>
   </div>
-
 </div>
