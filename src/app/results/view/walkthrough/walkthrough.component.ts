@@ -206,11 +206,29 @@ export class WalkthroughComponent implements OnInit, OnChanges {
     if (currState.outcome) {
 
     } else {
+      let text: string;
+      let idsByScore = keys(currState.options)
+        .filter(key => currState.options[ key ].status == 'active')
+        .sort((x, y) => (currState.options[ x ].votes.count - currState.options[ y ].votes.count));
 
-      let nextRound = this.state.rounds[ this.state.currRound + 1 ];
-      let loserId = nextRound.eliminated[ nextRound.eliminated.length - 1 ];
-      let loser = this.optionMap[ loserId ];
-      return `${loser.text} has the fewest votes of any remaining option, and will be eliminated next.`
+      let lowScore = currState.options[ idsByScore[ 0 ] ].votes.count;
+
+      let losers = idsByScore.filter(id => currState.options[ id ].votes.count == lowScore);
+
+      if (losers.length > 1) {
+        let names = '';
+        losers.forEach((id, idx) => {
+          if (idx > 0 && idx < losers.length - 1) {
+            names += ', ';
+          } else if (idx == losers.length - 1) {
+            names += ' and '
+          }
+          names += this.optionMap[ id ].text;
+        });
+        return `${names} are tied with the fewest votes, so one of them will be selected at random to be eliminated next.`
+      } else {
+        return `${this.optionMap[ losers[ 0 ] ].text}  has the fewest votes of any remaining option, and will be eliminated next.`
+      }
     }
   }
 
