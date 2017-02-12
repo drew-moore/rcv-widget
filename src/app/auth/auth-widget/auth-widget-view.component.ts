@@ -154,11 +154,6 @@ export class AuthWidgetViewComponent implements OnInit {
     this.mode = 'SIGNUP';
   }
 
-  userName() {
-    if (!!this.state.user && !!this.state.user.name) {
-
-    }
-  }
 
 
   inputFocus() {

@@ -1,69 +1,66 @@
-<div *ngIf="!state.pending && !state.user" [@slideRight]>
-  <div *ngIf="state.user == null">
+<div *ngIf="!state.pending && state.info.anonymous" [@slideRight]>
 
-    <div *ngIf="inactive" [@mainBtns] class="main-btns">
-      <button md-button (click)="loginClicked()">LOGIN</button>
-      <button md-button (click)="signupClicked()">SIGNUP</button>
-    </div>
-
-    <div *ngIf="loginActive || signupActive" [@slideRight] class="login-dialog">
-      <div class="fabs"
-           [@collapseRight]="(inputActive | async) ? 'collapsed' : 'uncollapsed'">
-        <button md-mini-fab class="social-fab fb" (click)="socialLogin('facebook')">
-          <md-icon fontSet="fa" fontIcon="fa-facebook-f"></md-icon>
-        </button>
-        <button md-mini-fab class="social-fab google" (click)="socialLogin('google')">
-          <md-icon fontSet="fa" fontIcon="fa-google"></md-icon>
-        </button>
-        <button md-mini-fab class="social-fab twitter" (click)="socialLogin('twitter')">
-          <md-icon fontSet="fa" fontIcon="fa-twitter"></md-icon>
-        </button>
-        <div class="or height-auto">or</div>
-      </div>
-
-      <div class="input-wrapper" [formGroup]="infoForm" [class.dark]="dark">
-        <md-input-container>
-          <input md-input
-                 type="text"
-                 formControlName="email"
-                 (focus)="inputFocus()"
-                 (blur)="inputBlur()"
-                 [@width]="(inputActive | async) ? 'wide' : 'short'">
-          <md-placeholder class="placeholder">Email</md-placeholder>
-        </md-input-container>
-
-        <md-input-container *ngIf="inputActive | async" [@growRight]>
-          <input md-input
-                 type="password"
-                 formControlName="password"
-                 (focus)="inputFocus()"
-                 (blur)="inputBlur()">
-          <md-placeholder class="placeholder">Password</md-placeholder>
-        </md-input-container>
-
-        <md-input-container *ngIf="signupActive && inputActive | async" [@growRight]>
-          <input md-input
-                 type="text"
-                 formControlName="name"
-                 (focus)="inputFocus()"
-                 (blur)="inputBlur()">
-          <md-placeholder class="placeholder">Name</md-placeholder>
-        </md-input-container>
-
-        <button md-raised-button color="primary" *ngIf="inputActive | async" [@growRight]
-                [disabled]="!infoForm.valid" class="submit-btn" (click)="submitClicked()"> {{loginActive ? 'LOG IN' :
-          'SIGN UP'}}
-        </button>
-
-      </div>
-    </div>
-
-
+  <div *ngIf="inactive" [@mainBtns] class="main-btns">
+    <button md-button (click)="loginClicked()">LOGIN</button>
+    <button md-button (click)="signupClicked()">SIGNUP</button>
   </div>
+
+  <div *ngIf="loginActive || signupActive" [@slideRight] class="login-dialog">
+    <div class="fabs"
+         [@collapseRight]="(inputActive | async) ? 'collapsed' : 'uncollapsed'">
+      <button md-mini-fab class="social-fab fb" (click)="socialLogin('facebook')">
+        <md-icon fontSet="fa" fontIcon="fa-facebook-f"></md-icon>
+      </button>
+      <button md-mini-fab class="social-fab google" (click)="socialLogin('google')">
+        <md-icon fontSet="fa" fontIcon="fa-google"></md-icon>
+      </button>
+      <button md-mini-fab class="social-fab twitter" (click)="socialLogin('twitter')">
+        <md-icon fontSet="fa" fontIcon="fa-twitter"></md-icon>
+      </button>
+      <div class="or height-auto">or</div>
+    </div>
+
+    <div class="input-wrapper" [formGroup]="infoForm" [class.dark]="dark">
+      <md-input-container>
+        <input md-input
+               type="text"
+               formControlName="email"
+               (focus)="inputFocus()"
+               (blur)="inputBlur()"
+               [@width]="(inputActive | async) ? 'wide' : 'short'">
+        <md-placeholder class="placeholder">Email</md-placeholder>
+      </md-input-container>
+
+      <md-input-container *ngIf="inputActive | async" [@growRight]>
+        <input md-input
+               type="password"
+               formControlName="password"
+               (focus)="inputFocus()"
+               (blur)="inputBlur()">
+        <md-placeholder class="placeholder">Password</md-placeholder>
+      </md-input-container>
+
+      <md-input-container *ngIf="signupActive && inputActive | async" [@growRight]>
+        <input md-input
+               type="text"
+               formControlName="name"
+               (focus)="inputFocus()"
+               (blur)="inputBlur()">
+        <md-placeholder class="placeholder">Name</md-placeholder>
+      </md-input-container>
+
+      <button md-raised-button color="primary" *ngIf="inputActive | async" [@growRight]
+              [disabled]="!infoForm.valid" class="submit-btn" (click)="submitClicked()"> {{loginActive ? 'LOG IN' :
+        'SIGN UP'}}
+      </button>
+
+    </div>
+  </div>
+
 </div>
 
 
-<div *ngIf="!state.pending && !!state.user"
+<div *ngIf="!state.pending && !state.info.anonymous"
      [@slideRight]
      (mouseenter)="showUserMenu(true)"
      (mouseleave)="showUserMenu(false)"
@@ -72,8 +69,8 @@
   <button md-button (click)="doLogout()" class="logout-btn" *ngIf="userMenuShown" [@slideRight]>LOGOUT</button>
   <!-- <div class="user-name height-auto">{{state.user.name.split(' ')[0]}}</div>-->
   <div class="user-avatar" (click)="showUserMenu()">
-    <img [src]="state.user.image" *ngIf="!!state.user.image">
-    <div class="placeholder" *ngIf="!state.user.image"></div>
+    <img [src]="state.info.photoUrl" *ngIf="!!state.info.photoUrl">
+    <div class="placeholder" *ngIf="!state.info.photoUrl"></div>
   </div>
 </div>
 

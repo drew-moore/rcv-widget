@@ -12,9 +12,8 @@ import {
 } from "./auth.state";
 import {Effect, Actions, toPayload} from "@ngrx/effects";
 import {Observable, Observer} from "rxjs";
-import {User} from "../core/user/user.model";
-import * as userFxns from "../core/user/user.functions";
 import {FirebaseAuthState, AuthMethods, AngularFireAuth, AuthProviders, AngularFireDatabase} from "angularfire2";
+import {toAuthInfo} from "./auth.service";
 
 import FirebaseError = firebase.FirebaseError;
 
@@ -70,13 +69,13 @@ export class AuthEffects {
         provider: providerMap[ provider ],
         method: AuthMethods.Popup
       }).then((it: FirebaseAuthState) => {
-        let user: User|null = userFxns.forAuthState(it);
-        if (user == null) {
+        if (it.auth == null) {
           console.error('login promise resolved successfully, but user is still null?');
           return observer.complete();
         } else {
-          return observer.next(new LoginSuccessAction(user));
+          return observer.next(new LoginSuccessAction(toAuthInfo(it)));
         }
+
       }).catch((err: FirebaseError) => {
         return observer.next(new AuthErrorAction(err));
       });
@@ -90,12 +89,12 @@ export class AuthEffects {
         method: AuthMethods.Password
       })
         .then((it: FirebaseAuthState) => {
-          let user: User|null = userFxns.forAuthState(it);
-          if (user == null) {
+          if (it.auth == null) {
             console.error('login promise resolved successfully, but user is still null?');
             return observer.complete();
           } else {
-            return observer.next(new LoginSuccessAction(user));
+            return observer.next(new LoginSuccessAction(toAuthInfo(it)));
+
           }
         }).catch((err: FirebaseError) => {
         return observer.next(new AuthErrorAction(err));
@@ -110,14 +109,8 @@ export class AuthEffects {
         .then((val: FirebaseAuthState) => {
             /*in this case, we've created an auth user object, but it doesn't have name etc. info imported from a social provider  */
 
-            let user: User = userFxns.forAny({
-              name: info.name,
-              image: '',
-              isVerified: false,
-              id: val.uid
-            });
 
-            return observer.next(new SignupSuccessAction(user));
+          return observer.next(new SignupSuccessAction(toAuthInfo(val)));
 
           }
         ).catch(err => observer.error(err));
@@ -126,10 +119,25 @@ export class AuthEffects {
   }
 
 
+  private loginAnonymously(): Observable<FirebaseAuthState> {
+    return Observable.create((observer: Observer<FirebaseAuthState>) => {
+      this.backend.login({
+        provider: AuthProviders.Anonymous,
+        method: AuthMethods.Anonymous
+      }).then(state => {
+        return observer.next(state);
+      }).catch(err => {
+        return observer.error(err);
+      })
+    }).take(1);
+  }
+
   private doLogout(): Observable<LogoutSuccessAction|AuthErrorAction> {
     return Observable.create((observer: Observer<LogoutSuccessAction|AuthErrorAction>) => {
       this.backend.logout().then(() => {
-        observer.next(new LogoutSuccessAction());
+        this.loginAnonymously().subscribe(info => {
+          observer.next(new LogoutSuccessAction(toAuthInfo(info)))
+        })
       }).catch(err => {
         observer.next(new AuthErrorAction(err));
       })

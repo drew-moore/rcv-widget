@@ -13,10 +13,10 @@ import {
 } from "./poll.models";
 import * as polls from "./poll.functions";
 import {REQUIRED_POLL_FIELDS, REQUIRED_POLL_OPTION_FIELDS} from "./poll.functions";
-import {AuthService} from "../../auth/auth.service";
 import {Observable, Observer} from "rxjs";
 import {PushResult} from "../_internal";
 import {PollsState, LoadPollAction} from "./polls.state";
+import {UserService} from "../user/user.service";
 
 @Injectable()
 export class PollService {
@@ -25,7 +25,7 @@ export class PollService {
 
   public readonly activePoll$: Observable<Poll>;
 
-  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService) {
+  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private userSvc: UserService) {
     this.state$ = store.select(getPollsState);
 
     this.activePoll$ = store.select(getActivePoll).filter(it => !!it);
@@ -54,14 +54,14 @@ export class PollService {
   public createPoll(input: PartialPoll): Observable<Poll> {
     return Observable.create((observer: Observer<Poll>) => {
 
-      this.authSvc.sessionUserId$.take(1).subscribe(authUserId => {
-        if (authUserId == null) {
+      this.userSvc.sessionUser$.take(1).subscribe(user => {
+        if (user == null) {
           observer.error({
             code: 401,
             message: 'User must be authenticated to create a forAny.'
           })
         } else {
-          let data = prepareSerializablePoll(input, authUserId);
+          let data = prepareSerializablePoll(input, user.id);
           this.db.list(`/polls`, { preserveSnapshot: true }).push(data)
             .then((result: PushResult) => {
                 this.observePollEntity(result.key).take(1).subscribe((it: PollEntity) => {

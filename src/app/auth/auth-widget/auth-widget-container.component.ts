@@ -6,7 +6,7 @@ import {AuthService} from "../auth.service";
 @Component({
   selector: 'rcv-auth-widget',
   template: `
-    <rcv-auth-widget-view [state]="state$ | async" [dark]="dark" (login)="login($event)" (logout)="logout()" (signup)="signup($event)" (active)="active.emit($event)"></rcv-auth-widget-view>
+    <rcv-auth-widget-view [state]="state$ | async" [dark]="dark" (login)="login($event)" (logout)="logout()" (signup)="signup($event)" (active)="active.emit($event)" *ngIf="!!(state$ | async)"></rcv-auth-widget-view>
   `,
   styles: [ `:host{display: block;}` ]
 })

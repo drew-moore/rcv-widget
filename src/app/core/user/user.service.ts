@@ -1,6 +1,4 @@
 import {Injectable} from "@angular/core";
-import {PollService} from "../poll/poll.service";
-import {VoteService} from "../vote/vote.service";
 import {Observable} from "rxjs";
 import {AngularFireDatabase} from "angularfire2";
 import {User, UserEntity} from "./user.model";
@@ -8,6 +6,7 @@ import * as users from "./user.functions";
 import {UsersState} from "./user.state";
 import {Store} from "@ngrx/store";
 import {AppState, getUserState, getSessionUserEntity} from "../../state";
+import {AuthInfo} from "../../auth/auth.state";
 
 @Injectable()
 export class UserService {
@@ -17,7 +16,7 @@ export class UserService {
   public readonly sessionUser$: Observable<User|null>;
 
 
-  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private pollSvc: PollService, voteSvc: VoteService) {
+  constructor(private db: AngularFireDatabase, private store: Store<AppState>) {
 
     this.state$ = store.select(getUserState);
 
@@ -56,5 +55,19 @@ export class UserService {
     });
   }
 
+
+  verifyRecordForAuthAccount(info: AuthInfo): void {
+    this.db.object(`/users/${info.uid}`).take(1).subscribe((it: UserEntity) => {
+      if (!it.$exists()) {
+        this.createRecordForAuthAccount(info);
+      }
+    })
+  }
+
+  createRecordForAuthAccount(info: AuthInfo): void {
+    this.db.object(`/users`).set({ [info.uid]: users.forAuthInfo(info) })
+      .then((result) => console.info(`created user record for user ${info.displayName} (${info.uid})`))
+      .catch(err => {throw err;});
+  }
 
 }

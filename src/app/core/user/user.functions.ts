@@ -1,6 +1,8 @@
 import {FirebaseAuthState} from "angularfire2";
 import {keys} from "lodash";
 import {User, RequiredUserField, OptionalUserField, UserField, UserEntity} from "./user.model";
+import {AuthInfo} from "../../auth/auth.state";
+import {toAuthInfo} from "../../auth/auth.service";
 
 const REQUIRED_USER_FIELDS: RequiredUserField[] = [ 'id', 'name', 'image', 'isVerified' ];
 const OPTIONAL_USER_FIELDS: OptionalUserField[] = [ 'polls', 'votes' ];
@@ -12,17 +14,21 @@ export function forAuthState(state: FirebaseAuthState): User|null {
     return null;
   }
 
-  let name = state.auth.displayName || '';
-  let image = state.auth.photoURL || '';
-  let isVerified = state.auth.emailVerified === true;
+  return forAuthInfo(toAuthInfo(state));
+
+}
+
+export function forAuthInfo(auth: AuthInfo): User {
+  let name = auth.displayName || '';
+  let image = auth.photoUrl || '';
+  let isVerified = auth.emailVerified === true;
 
   return {
-    id: state.uid,
+    id: auth.uid,
     name,
     image,
     isVerified
   }
-
 }
 
 export function forAny(input: any): User {

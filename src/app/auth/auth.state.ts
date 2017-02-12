@@ -1,12 +1,22 @@
 import {Action} from "@ngrx/store";
-import {User} from "../core/user/user.model";
+import * as firebase from "firebase";
 
 export type SocialAuthProvider = 'facebook'|'twitter'|'google';
 
+export type FirebaseUser = firebase.User;
+
 export type AuthError = { code: string, message: string };
 
+export interface AuthInfo {
+  uid: string;
+  anonymous: boolean;
+  displayName?: string;
+  photoUrl?: string;
+  emailVerified?: boolean;
+}
+
 export interface AuthState {
-  user: User|null;
+  info: AuthInfo; //TODO 2/10/17 -- this shold be FirebaseUser, not User
   pending: boolean;
   error?: AuthError;
 }
@@ -37,7 +47,7 @@ export class LoginAction implements Action {
 export class LoginSuccessAction implements Action {
   type = AuthActions.LOGIN_SUCCESS;
 
-  constructor(public payload: User) {}
+  constructor(public payload: AuthInfo) {}
 }
 
 export class LogoutAction implements Action {
@@ -47,7 +57,8 @@ export class LogoutAction implements Action {
 
 export class LogoutSuccessAction implements Action {
   type = AuthActions.LOGOUT_SUCCESS;
-  payload = null;
+
+  constructor(public payload: AuthInfo) {}
 }
 
 export class AuthErrorAction implements Action {
@@ -59,7 +70,7 @@ export class AuthErrorAction implements Action {
 export class SignupSuccessAction implements Action {
   type = AuthActions.PASSWORD_SIGNUP_SUCCESS;
 
-  constructor(public payload: User) {}
+  constructor(public payload: AuthInfo) {}
 }
 
 export class PasswordSignupAction implements Action {
@@ -69,12 +80,7 @@ export class PasswordSignupAction implements Action {
 }
 
 
-const initialState: AuthState = {
-  user: null,
-  pending: false
-};
-
-export function auth(state = initialState, action: Action): AuthState {
+export function auth(state: AuthState, action: Action): AuthState {
 
   switch (action.type) {
     case AuthActions.LOGIN:
@@ -86,13 +92,13 @@ export function auth(state = initialState, action: Action): AuthState {
     case AuthActions.PASSWORD_SIGNUP_SUCCESS:
       return {
         pending: false,
-        user: (action as LoginSuccessAction|SignupSuccessAction).payload
+        info: (action as LoginSuccessAction|SignupSuccessAction).payload
       };
 
     case AuthActions.LOGOUT_SUCCESS:
       return {
         pending: false,
-        user: null
+        info: (action as LogoutSuccessAction).payload
       };
 
     case AuthActions.ERROR:
@@ -106,5 +112,5 @@ export function auth(state = initialState, action: Action): AuthState {
 }
 
 
-export const getAuthUser = (state: AuthState) => state.user;
+export const getAuthInfo = (state: AuthState) => state.info;
 

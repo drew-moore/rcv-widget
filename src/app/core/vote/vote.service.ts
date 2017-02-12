@@ -3,7 +3,7 @@ import {createSelector} from "reselect";
 import * as moment from "moment";
 import {AngularFireDatabase} from "angularfire2";
 import {Store} from "@ngrx/store";
-import {AppState, getVotesState, getVoteEntities} from "../../state";
+import {AppState, getVotesState, getVoteEntities, getVotesForActivePoll} from "../../state";
 import {Observable, Observer} from "rxjs";
 import {VotesState, CastVoteAction, VoteCastSuccessAction, VotesActions} from "./votes.state";
 import {Vote, PartialVote, SerializableVote, VoteEntity} from "./vote.models";
@@ -12,14 +12,18 @@ import * as votes from "./vote.functions";
 import {PollService} from "../poll/poll.service";
 import {PushResult} from "../_internal";
 import {Actions, toPayload} from "@ngrx/effects";
+import {UserService} from "../user/user.service";
 
 @Injectable()
 export class VoteService {
 
   private state$: Observable<VotesState>;
 
-  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService, private pollSvc: PollService, private actions: Actions) {
+  public readonly activePollVotes$: Observable<Vote[]>;
+
+  constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService, private pollSvc: PollService, private actions: Actions, private userSvc: UserService) {
     this.state$ = store.select(getVotesState);
+    this.activePollVotes$ = store.select(getVotesForActivePoll).skip(1);
   }
 
 
@@ -51,7 +55,7 @@ export class VoteService {
      });*/
 
     return Observable.create((observer: Observer<Vote>) => {
-      Observable.combineLatest(this.authSvc.sessionUser$.take(1), this.pollSvc.loadPoll(pollId).take(1)).subscribe(([ user, poll ]) => {
+      Observable.combineLatest(this.userSvc.sessionUser$.take(1), this.pollSvc.loadPoll(pollId).take(1)).subscribe(([ user, poll ]) => {
         let voterId: string;
 
         //ensure the current user has the right to cast a vote
@@ -73,10 +77,11 @@ export class VoteService {
             break;
           case 'unverified':
             if (user == null) {
-              return observer.error({
+              /*              return observer.error({
                 code: 401,
                 message: `Poll security is set to UNVERIFIED, but no auth user exists.`
-              })
+               })*/
+              voterId = 'anon';
             } else {
               voterId = user.id;
             }

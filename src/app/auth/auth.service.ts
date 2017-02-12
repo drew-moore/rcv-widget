@@ -1,9 +1,7 @@
 import {Injectable} from "@angular/core";
-import {AngularFireAuth} from "angularfire2";
+import {AngularFireAuth, FirebaseAuthState, AuthMethods, AuthProviders} from "angularfire2";
 import {AppState, getAuthState, getAuthUserId, getAuthUser} from "../state";
 import {Store} from "@ngrx/store";
-import {User} from "../core/user/user.model";
-import * as userFxns from "../core/user/user.functions";
 import {
   LoginSuccessAction,
   SocialAuthProvider,
@@ -11,18 +9,21 @@ import {
   LogoutAction,
   AuthState,
   PasswordSignupAction,
-  AuthActions
+  AuthActions,
+  AuthInfo,
+  LogoutSuccessAction
 } from "./auth.state";
-import {Observable} from "rxjs";
+import {Observable, Observer} from "rxjs";
 import {Actions} from "@ngrx/effects";
 import FirebaseError = firebase.FirebaseError;
+import AuthProvider = firebase.auth.AuthProvider;
 
 @Injectable()
 export class AuthService {
 
   public readonly state$: Observable<AuthState>;
 
-  public readonly sessionUser$: Observable<User|null>;
+  public readonly sessionUser$: Observable<AuthInfo|null>;
 
   public readonly sessionUserId$: Observable<string|null>;
 
@@ -33,7 +34,7 @@ export class AuthService {
     this.sessionUserId$ = store.select(getAuthUserId);
 
 
-    this.backend.take(1).subscribe(val => {
+    this.backend.take(1).subscribe((authState: FirebaseAuthState) => {
       /*
        * The store always initializes to an unauthenticated state - we don't know whether a user is authenticated until the
        * app is bootstrapped and we get this first tick from the backend svc. So, we listen for that tick, and if indeed
@@ -43,11 +44,33 @@ export class AuthService {
        * another tab, that won't be updated here until refresh. If we need to support that, we can do a combineLatest(backend, state),
        * and compare each pair of values to see if they don't match.
        * */
-      let user: User|null = userFxns.forAuthState(val);
-      if (user != null) {
-        this.store.dispatch(new LoginSuccessAction(user));
+
+      if (authState == null) {
+        this.loginAnonymously().subscribe(state => {
+          this.store.dispatch(new LogoutSuccessAction(toAuthInfo(state)));
+        })
+      } else if (authState.auth == null) {
+        this.store.dispatch(new LogoutSuccessAction(toAuthInfo(authState)));
       }
-    })
+      else {
+        this.store.dispatch(new LoginSuccessAction(toAuthInfo(authState)));
+      }
+
+    });
+
+  }
+
+  private loginAnonymously(): Observable<FirebaseAuthState> {
+    return Observable.create((observer: Observer<FirebaseAuthState>) => {
+      this.backend.login({
+        provider: AuthProviders.Anonymous,
+        method: AuthMethods.Anonymous
+      }).then(state => {
+        return observer.next(state);
+      }).catch(err => {
+        return observer.error(err);
+      })
+    }).take(1);
   }
 
   public login(input: SocialAuthProvider|{ email: string, password: string }): Observable<boolean> {
@@ -73,3 +96,21 @@ export class AuthService {
 
 }
 
+export function toAuthInfo(state: FirebaseAuthState): AuthInfo {
+  if (state.anonymous) {
+    return {
+      anonymous: true,
+      uid: state.uid
+    }
+  } else if (state.auth != null) {
+    return {
+      anonymous: false,
+      uid: state.uid,
+      displayName: state.auth.displayName || undefined,
+      emailVerified: state.auth.emailVerified,
+      photoUrl: state.auth.photoURL || undefined
+    }
+  } else {
+    throw `AuthState is not anonymous but state.auth is null.`
+  }
+}
