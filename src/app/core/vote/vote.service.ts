@@ -23,7 +23,7 @@ export class VoteService {
 
   constructor(private db: AngularFireDatabase, private store: Store<AppState>, private authSvc: AuthService, private pollSvc: PollService, private actions: Actions, private userSvc: UserService) {
     this.state$ = store.select(getVotesState);
-    this.activePollVotes$ = store.select(getVotesForActivePoll).skip(1);
+    this.activePollVotes$ = store.select(getVotesForActivePoll).filter(it => !!it);
   }
 
 

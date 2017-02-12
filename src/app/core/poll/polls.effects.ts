@@ -2,7 +2,7 @@ import {Injectable} from "@angular/core";
 import {Effect, Actions, toPayload} from "@ngrx/effects";
 import {Observable} from "rxjs";
 import {PollLoadedAction, PollsActions, PollCreatedAction, LoadPollAction} from "./polls.state";
-import {WidgetActions} from "../../widget/widget.state";
+import {CoreActions} from "../state";
 import {Poll, PartialPoll} from "./poll.models";
 import * as polls from "./poll.functions";
 import {PollService} from "./poll.service";
@@ -11,7 +11,7 @@ import {PollService} from "./poll.service";
 export class PollEffects {
 
   @Effect()
-  loadActivatedPolls = this.actions.ofType(WidgetActions.ACTIVATE_POLL)
+  loadActivatedPolls = this.actions.ofType(CoreActions.ACTIVATE_POLL)
     .map(toPayload)
     .map(id => new LoadPollAction(id));
 

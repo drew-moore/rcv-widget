@@ -27,6 +27,12 @@ html, body {
   @include mq-gt-md {
     font-size: $font-size-lg;
   }
+
+  @media only screen and (min-width: 4000px) {
+    //font was appearing too thin when the app was displayed on a TV
+    font-weight: 500;
+  }
+
 }
 
 .app-root {

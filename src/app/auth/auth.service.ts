@@ -1,6 +1,6 @@
 import {Injectable} from "@angular/core";
 import {AngularFireAuth, FirebaseAuthState, AuthMethods, AuthProviders} from "angularfire2";
-import {AppState, getAuthState, getAuthUserId, getAuthUser} from "../state";
+import {AppState, getAuthState, getAuthUserId, getAuthUserInfo} from "../state";
 import {Store} from "@ngrx/store";
 import {
   LoginSuccessAction,
@@ -30,7 +30,7 @@ export class AuthService {
   constructor(private backend: AngularFireAuth, private store: Store<AppState>, private actions: Actions) {
 
     this.state$ = store.select(getAuthState);
-    this.sessionUser$ = store.select(getAuthUser);
+    this.sessionUser$ = store.select(getAuthUserInfo);
     this.sessionUserId$ = store.select(getAuthUserId);
 
 

@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {Effect, Actions, toPayload} from "@ngrx/effects";
 import {Observable} from "rxjs";
-import {WidgetActions} from "../../widget/widget.state";
+import {CoreActions} from "../state";
 import {AngularFireDatabase} from "angularfire2";
 import {
   PollVotesLoadedAction,
@@ -17,7 +17,7 @@ export class VoteEffects {
 
   @Effect()
   loadActivatedPollVotes: Observable<LoadPollVotesAction> =
-    this.actions.ofType(WidgetActions.ACTIVATE_POLL)
+    this.actions.ofType(CoreActions.ACTIVATE_POLL)
       .map(toPayload)
       .map(pollId => new LoadPollVotesAction(pollId));
 

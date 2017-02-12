@@ -1,5 +1,4 @@
-import * as fromWidget from "./widget/widget.state";
-import {WidgetState, widget} from "./widget/widget.state";
+import {activePoll, sessionUser} from "./core/state";
 import * as fromPolls from "./core/poll/polls.state";
 import {PollsState} from "./core/poll/polls.state";
 import {StoreModule, combineReducers, ActionReducer} from "@ngrx/store";
@@ -22,27 +21,31 @@ import {BallotState, ballot} from "./ballot/ballot.state";
 
 
 export interface AppState {
+  activePoll: string,
+  sessionUser: string,
   auth: AuthState,
   polls: PollsState,
   votes: VotesState,
   users: UsersState,
-  widget: WidgetState,
   ballot: BallotState,
   results: ResultsState
 }
 
 export const reducers = {
+  activePoll: activePoll,
+  sessionUser: sessionUser,
   auth: auth,
   polls: polls,
   votes: votes,
   users: users,
-  widget: widget,
   ballot: ballot,
   results: results
 };
 
 
-export const getWidgetState = (state: AppState) => state.widget;
+export const getActivePollId = (state: AppState) => state.activePoll;
+
+export const getSessionUserId = (state: AppState) => state.sessionUser;
 
 export const getPollsState = (state: AppState) => state.polls;
 
@@ -54,19 +57,21 @@ export const getResultsState = (state: AppState) => state.results;
 
 export const getAuthState = (state: AppState) => state.auth;
 
-export const getUserState = (state: AppState) => state.users;
 
+export const getAuthUserInfo = createSelector(getAuthState, fromAuth.getAuthInfo);
 
-export const getAuthUser = createSelector(getAuthState, fromAuth.getAuthUser);
-
-export const getAuthUserId = createSelector(getAuthUser, (user) => {
-  if (!user) {
-    return null;
-  }
-  return user.id;
+export const getAuthUserId = createSelector(getAuthUserInfo, (info) => {
+  return info.uid;
 });
 
-const getActivePollId = createSelector(getWidgetState, fromWidget.getActivePollId);
+
+
+export const getUserState = (state: AppState) => state.users;
+
+export const getUserData = createSelector(getUserState, fromUsers.getLoadedUserData);
+
+export const getSessionUserData = createSelector(getSessionUserId, getUserData, (id, users) => users[ id ]);
+
 
 const getPollIds = createSelector(getPollsState, fromPolls.getPollIds);
 
@@ -78,7 +83,6 @@ export const getVoteEntities = createSelector(getVotesState, fromVotes.getVotes)
 
 const getPollIndexedVotes = createSelector(getVotesState, fromVotes.getVotesIndexedByPollId);
 
-export const getSessionUserEntity = createSelector(getUserState, fromUsers.getSessionUserData);
 
 
 export const getActivePoll = createSelector(getActivePollId, getPollEntities, (id, entities) => {
