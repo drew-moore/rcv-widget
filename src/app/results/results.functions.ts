@@ -1,4 +1,4 @@
-import {keys, values} from "lodash";
+import {keys, values, random} from "lodash";
 import {PollOption} from "../core/poll/poll.models";
 import {Vote} from "../core/vote/vote.models";
 import {OptionStateSnapshot, PollOutcome, OptionOutcome, RoundState} from "./results.models";
@@ -170,9 +170,17 @@ function getActiveVotes(distribution: VoteDistribution) {
 }
 
 function lowestScorer(dist: VoteDistribution, ignore: string[]): string {
-  return keys(dist)
+  let idsByScoreAsc = keys(dist)
     .filter(id => id !== EXHAUSTED && ignore.indexOf(id) < 0)
-    .sort((x, y) => dist[ x ].length - dist[ y ].length)[ 0 ];
+    .sort((x, y) => dist[ x ].length - dist[ y ].length);
+  let lowScore = dist[ idsByScoreAsc[ 0 ] ].length;
+  let lowScorers = idsByScoreAsc.filter(id => dist[ id ].length == lowScore);
+
+  if (lowScorers.length > 1) {
+    return lowScorers[ random(0, lowScorers.length - 1) ]
+  } else {
+    return lowScorers[ 0 ];
+  }
 }
 
 function distribute(votes: Vote[], options: string[], removed: string[]): VoteDistribution {

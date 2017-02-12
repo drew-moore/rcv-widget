@@ -196,7 +196,7 @@ export class WalkthroughComponent implements OnInit, OnChanges {
     let idsByScoreDesc = keys(currState.options).sort((x, y) => currState.options[ y ].votes.count - currState.options[ x ].votes.count);
     let leaderScore = currState.options[ idsByScoreDesc[ 0 ] ].votes.count;
     let toReturn: string[] = [];
-    for (let i = 0; currState.options[ idsByScoreDesc[ i ] ].votes.count == leaderScore; i++) {
+    for (let i = 0; i < idsByScoreDesc.length && currState.options[ idsByScoreDesc[ i ] ].votes.count == leaderScore; i++) {
       toReturn.push(idsByScoreDesc[ i ]);
     }
     return toReturn
@@ -204,10 +204,13 @@ export class WalkthroughComponent implements OnInit, OnChanges {
 
   getLosers(): string[] {
     let currState = this.currState();
-    let idsByScoreAsc = keys(currState.options).sort((x, y) => currState.options[ x ].votes.count - currState.options[ y ].votes.count);
+    let idsByScoreAsc =
+      keys(currState.options)
+        .filter(id => currState.eliminated.indexOf(id) < 0)
+        .sort((x, y) => currState.options[ x ].votes.count - currState.options[ y ].votes.count);
     let lowScore = currState.options[ idsByScoreAsc[ 0 ] ].votes.count;
     let toReturn: string[] = [];
-    for (let i = 0; currState.options[ idsByScoreAsc[ i ] ].votes.count == lowScore; i++) {
+    for (let i = 0; i < idsByScoreAsc.length && currState.options[ idsByScoreAsc[ i ] ].votes.count == lowScore; i++) {
       toReturn.push(idsByScoreAsc[ i ]);
     }
     return toReturn
