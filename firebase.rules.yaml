@@ -1,3 +1,38 @@
+
+functions:
+  - ownsPoll(id): root.polls[id].owner == auth.uid
+  - ownsVote(pollId, voteId): root.polls[pollId][voteId].owner == auth.uid
+  - allowsAnonymousVotes(pollId): root.polls[pollId].security == 'anonymous'
+  - allowsUnverifiedVotes(pollId):  root.polls[pollId].security == 'unverified'
+  - voteOwner(pollId, voteId): root.votes[pollId][voteId].owner
+  - userIsVerified(userId): root.users[userId].isVerified == true
+
+
 root:
-  read: true
-  write: true
+  polls:
+    .read: true
+    $id:
+      #anyone authenticated can create a poll (i.e. write to a nonexistent path)
+      #only the owner of an
+      .write: auth != null && (!data.exists() || ownsPoll($id))
+
+  users:
+    $id:
+      .read: true
+      .write: auth != null && auth.uid == $id
+
+  votes:
+    .read: true
+    $pollId:
+      $voteId:
+        #either a new vote is being created or an existing one is being edited by its owner, AND
+          #the poll allows anonymous votes, OR
+          #the user is authenticated and the poll allows votes from all authenticated users, OR
+          #the user is verified
+        .write: >
+          (!data.exists() || auth.uid == data.owner) &&
+            (
+              allowsAnonymousVotes($pollId) ||
+              (auth != null && allowsUnverifiedVotes($pollId)) ||
+              userIsVerified(auth.uid)
+            )
