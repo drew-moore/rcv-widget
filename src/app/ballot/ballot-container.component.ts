@@ -15,9 +15,9 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {PollService} from "../core/poll/poll.service";
 import {Store} from "@ngrx/store";
 import {VoteService} from "../core/vote/vote.service";
-import {PartialVote} from "../core/vote/vote.models";
+import {PartialVote, Vote} from "../core/vote/vote.models";
 import {MediaMonitor, MatchMedia, BreakPointRegistry} from "@angular/flex-layout";
-import {getBallotState} from "../state";
+import {getBallotState, getSessionUserVoteForActivePoll} from "../state";
 import {UserService} from "../core/user/user.service";
 import {IsWebsite} from "../index";
 import {User} from "../core/user/user.model";
@@ -72,6 +72,7 @@ export class BallotContainerComponent implements OnInit {
 
   poll$: Observable<Poll>;
   state$: Observable<BallotState>;
+  sessionUserVote$: Observable<Vote|null>;
 
   private media$: Subject<string> = new BehaviorSubject('');
 
@@ -100,13 +101,20 @@ export class BallotContainerComponent implements OnInit {
 
     this.poll$ = this.pollSvc.activePoll$;
 
-    this.state$ = this.poll$.take(1).flatMap(poll => this.initializeAndReturnBallotState(poll));
 
-    this.isReady$ = Observable.combineLatest(this.poll$.filter(it => it != null), this.state$).take(1).map(() => true).startWith(false);
+
+    this.sessionUser$ = userService.sessionUser$;
+
+    this.sessionUserVote$ = store.select(getSessionUserVoteForActivePoll);
+
+
+    this.state$ = Observable.combineLatest(this.poll$, this.sessionUserVote$)
+      .flatMap(([ poll, vote ]) => this.initializeAndReturnBallotState(poll, vote));
 
     this.options = this.state$.map(state => values(state.options));
 
-    this.sessionUser$ = userService.sessionUser$;
+    this.isReady$ = Observable.combineLatest(this.poll$.filter(it => it != null), this.state$, this.sessionUserVote$).take(1).map(() => true).startWith(false);
+
 
     //TODO watch @angular/flex-layout bug #65 and remove this when it's resolved
     breakpoints.items.forEach((bp: any) => mediaWatcher.observe(bp.mediaQuery).subscribe((x: any) => {
@@ -126,8 +134,8 @@ export class BallotContainerComponent implements OnInit {
 
   }
 
-  private initializeAndReturnBallotState(poll: Poll): Observable<BallotState> {
-    this.store.dispatch(new InitializeBallotAction({ poll: poll }));
+  private initializeAndReturnBallotState(poll: Poll, vote: Vote|null): Observable<BallotState> {
+    this.store.dispatch(new InitializeBallotAction(poll, vote));
     return this.store.select(getBallotState);
   }
 

@@ -111,6 +111,17 @@ export const getVotesForActivePoll = createSelector(getActivePollId, getPollInde
   }
 });
 
+export const getSessionUserVoteForActivePoll = createSelector(getActivePollId, getSessionUserData, getVoteEntities, (pollId, user, votes) => {
+  if (!user || !user.votes) {
+    return null;
+  } else if (!user.votes[ pollId ]) {
+    return null;
+  } else {
+    return votes[ user.votes[ pollId ] ];
+  }
+
+});
+
 
 const devReducer: ActionReducer<AppState> = compose(combineReducers)(reducers);
 

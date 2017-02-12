@@ -26,8 +26,11 @@ export const BallotActions = {
 
 export class InitializeBallotAction implements Action {
   type = BallotActions.INITIALIZE;
+  public readonly payload: { poll: Poll, vote: Vote|null };
 
-  constructor(public payload: { poll: Poll, currentVote?: Vote }) {}
+  constructor(poll: Poll, vote: Vote|null = null) {
+    this.payload = { poll, vote };
+  }
 }
 
 export class SelectionAddedAction implements Action {
@@ -58,28 +61,31 @@ export class ActionTypeChangedAction implements Action {
 export type BallotAction = InitializeBallotAction|SelectionAddedAction|SelectionRemovedAction|SelectionsReordereddAction|ActionTypeChangedAction;
 
 
-function initializeBallotState(poll: Poll, extantVote?: Vote): BallotState {
+function initializeBallotState(poll: Poll, extantVote: Vote|null): BallotState {
 
-  let opts;
+  let options: BallotOption[],
+    numSelected: number;
 
   if (!extantVote) {
-    opts = shuffle(poll.options).map((opt, idx) => Object.assign({}, opt, {
+    options = shuffle(poll.options).map((opt, idx) => Object.assign({}, opt, {
         unselectedIndex: idx,
         selectedIndex: -1
       })
-    )
+    );
+    numSelected = 0;
   } else {
     //TODO
-    opts = shuffle(poll.options).map((opt, idx) => Object.assign({}, opt, {
+    options = shuffle(poll.options).map((opt, idx) => Object.assign({}, opt, {
       unselectedIndex: idx,
-      selectedIndex: -1
-    }))
+      selectedIndex: extantVote.choices.indexOf(opt.id)
+    }));
+    numSelected = extantVote.choices.length;
   }
 
   return {
-    numSelected: 0,
-    ids: opts.map(opt => opt.id),
-    options: opts.reduce((result, next) => Object.assign(result, { [next.id]: next }), {}),
+    numSelected,
+    ids: options.map(opt => opt.id),
+    options: options.reduce((result, next) => Object.assign(result, { [next.id]: next }), {}),
     lastAction: 'click'
   };
 
@@ -130,7 +136,8 @@ export function ballot(state: BallotState = initialState, action: BallotAction):
   let opt: BallotOption, updatedOptions: { [id: string]: BallotOption };
   switch (action.type) {
     case BallotActions.INITIALIZE:
-      return initializeBallotState((action as InitializeBallotAction).payload.poll);
+
+      return initializeBallotState((action as InitializeBallotAction).payload.poll, (action as InitializeBallotAction).payload.vote);
 
     case BallotActions.SELECTION_ADDED:
       opt = (action as SelectionAddedAction).payload;

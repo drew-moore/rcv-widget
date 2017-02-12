@@ -134,6 +134,9 @@ export class BallotViewComponent implements AfterViewInit, OnChanges {
     if (changes[ 'state' ]) {
       this.updateSlots();
     }
+    if (changes[ 'userVote' ]) {
+
+    }
   }
 
   isPristine(): boolean {
